@@ -3,13 +3,15 @@ package com.hh;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNAppAuthPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
+import com.github.droibit.android.reactnative.customtabs.CustomTabsPackage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,8 +27,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNAppAuthPackage(),
+            new VectorIconsPackage(),
             new RNFetchBlobPackage(),
-            new ImagePickerPackage()
+            new ImagePickerPackage(),
+            new CustomTabsPackage()
+            
       );
     }
 
