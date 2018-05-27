@@ -61,6 +61,12 @@ class CreateEvent extends React.Component {
 
     }
 
+    static navigatorOptions = {
+        header: {
+            visible: false
+        }
+    };
+
 
     getCategories() {
         return new Promise((resolve, reject) => {
@@ -455,13 +461,7 @@ class CreateEvent extends React.Component {
                         header={"Create Event"}
                         navigator={this.props.navigator}
                     />
-                <View style={styles.viewBtn}>
-
-                    <Image source={Buttonbar}
-                        style={styles.buttonBar}
-                    />
-
-                </View>
+                
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ padding: 20 }}>
                         <View style={styles.viewChooseImg}>
@@ -506,7 +506,7 @@ class CreateEvent extends React.Component {
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='date-range' type='material-icons' size={50} color='green'
+                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
                                         />
                                     </View>
 
@@ -528,7 +528,7 @@ class CreateEvent extends React.Component {
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='date-range' type='material-icons' size={50} color='green'
+                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
                                         />
                                     </View>
 
@@ -552,7 +552,7 @@ class CreateEvent extends React.Component {
                                         />
                                     </View>
                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='access-time' type='material-icons' size={50} color='green'
+                                        <Icon name='access-time' type='material-icons' size={50} color='#6d616f'
                                         />
                                     </View>
 

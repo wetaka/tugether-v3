@@ -24,6 +24,12 @@ const HIDE_DURATION = 200;
 
 class Description extends React.Component {
 
+    static navigatorOptions = {
+        header: {
+            visible: false
+        }
+    };
+
     state = {
         event: {
             eventid: "",
@@ -42,7 +48,7 @@ class Description extends React.Component {
             posterpic: "",
             createdate: "",
             updatedate: "",
-            posterpic:"",
+            posterpic: "",
             // startdate: "",
             // enddate: "",
             eventstdate: "",
@@ -62,10 +68,10 @@ class Description extends React.Component {
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
         // fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
-        fetch(API_URL + 'event/1')
+        fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
             .then((response) => response.json())
             .then((data) => {
-                console.log('get eventid', data)
+                console.log('get eventid Description :', data)
                 this.setState({
                     event: {
                         eventid: data.eventid,
@@ -81,10 +87,10 @@ class Description extends React.Component {
                         phone: "" + data.phone,
                         hashtag: "" + data.hashtag,
                         bcapprove: "" + data.bcapprove,
-                        posterpic:  {uri :data.posterpic},
+                        posterpic: { uri: data.posterpic },
                         createdate: "" + data.createdate,
                         updatedate: "" + data.updatedate,
-                        eventstdate: "" + data.eventstdate,
+                        eventstdate: new Date(data.eventstdate),
                         eventenddate: "" + data.eventenddate,
                         active: data.active,
                         limited: data.limited
@@ -129,6 +135,29 @@ class Description extends React.Component {
             })
     }
 
+    addJoin() {
+        fetch(API_URL + 'join-user' + this.state.user.userid, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ...this.state.event,
+                join: [...this.state.event.join, this.state.user.userid]
+            }
+            ),
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log('vinaja', responseJson)
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
 
     addComment(commentstr) {
         fetch(API_URL + 'comment', {
@@ -155,9 +184,9 @@ class Description extends React.Component {
     }
 
     componentWillMount() {
-        // this.getCurrentUser();
-        // this.getEvent();
-        // this.getAllComment();
+        this.getCurrentUser();
+        this.getEvent();
+        this.getAllComment();
 
     }
 
@@ -177,6 +206,19 @@ class Description extends React.Component {
                 alert("Fail");
             });
     }
+
+    setFormatDate(date, month, year) {
+        date = "0" + date
+        month = "0" + month
+        return date.substring(date.length - 2, date.length) + "-" + month.substring(month.length - 2, month.length) + "-" + year
+      }
+    
+      setFormatTime(hours, minutes) {
+        hours = "0" + hours
+        minutes = "0" + minutes
+        return hours.substring(hours.length - 2, hours.length) + ":" + minutes.substring(minutes.length - 2, minutes.length)
+      }
+    
 
     renderPost(item) {
         console.log(item)
@@ -210,33 +252,38 @@ class Description extends React.Component {
                     navigator={this.props.navigator}
                 />
 
-                <View style={styles.searchStyle}>
-                    <SearchHeader
-                    // pm={this.props.userid}  
-                    />
-                </View>
 
 
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ flex: 1 }}>
-
+                        <View>
+                            <TouchableOpacity
+                                style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                onPress={() => { this.addJoin() }}
+                            >
+                                <Text style={{ color: 'white', fontSize: 30 }}>
+                                    Join Event
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                         {/* <Transition shared='circle'> */}
-                            {/* <Transition shared={this.props.navigation.state.params.eventid}> */}
-                            {/* <Image source={imgposter1}
+                        {/* <Transition shared={this.props.navigation.state.params.eventid}> */}
+                        {/* <Image source={imgposter1}
                                 style={styles.posterImg} /> */}
-                            {/* <Image source={poster} style={styles.posterStyle} ImageResizeMode="repeat" />
+                        {/* <Image source={poster} style={styles.posterStyle} ImageResizeMode="repeat" />
                         </Transition> */}
                         <Image
                             style={styles.posterStyle}
                             // source={this.props.image}
                             source={event.posterpic}
-                            // source={imgposter1}
-                            
+                        // source={imgposter1}
+
                         />
                         <View style={{ padding: 20 }}>
                             <Text style={{ fontSize: 23 }}>{event.topic}</Text>
-                            <Text style={{ fontSize: 15 }}>Date    : {event.eventstdate}</Text>
-                            <Text style={{ fontSize: 15 }}>time    : </Text>
+                            {/* <Text style={{ fontSize: 15 }}>Date    : {event.eventstdate}</Text> */}
+                            <Text style={{ fontSize: 15 }}>Date    : {this.setFormatDate(event.eventstdate.getDate(), event.eventstdate.getMonth() + 1, event.eventstdate.getFullYear())}</Text>
+                            <Text style={{ fontSize: 15 }}>time    : {this.setFormatTime(event.eventstdate.getHours(),event.eventstdate.getMinutes())} </Text>
                             <Text style={{ fontSize: 15 }}>Place   : {event.location}</Text>
                             <Text style={{ fontSize: 15 }}>Contact : </Text>
                             <View style={styles.iconView}>
@@ -303,7 +350,7 @@ class Description extends React.Component {
 
 const styles = StyleSheet.create({
 
-    posterStyle: { width: width,flex:1, alignSelf: 'center' },
+    posterStyle: { width: width, flex: 1, alignSelf: 'center' },
     scrollStyle: { flexDirection: 'column', backgroundColor: "white", flex: 1 },
     searchStyle: { flexDirection: 'column', height: 55, width: '100%' },
     fb: { alignSelf: 'flex-start', width: 50, height: 50 },
@@ -334,11 +381,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#ffffff',
         justifyContent: 'center',
-      },
-      image: {
+    },
+    image: {
         width: 400,
         height: 400,
-      }
+    }
 
 })
 

@@ -9,6 +9,7 @@ import ImagePicker from 'react-native-image-picker';
 import HeaderBack from "../../components/HeaderBack";
 import HeaderMain from "../../components/HeaderMain";
 import HeaderText from "../../components/HeaderText";
+import { Icon } from 'react-native-elements';
 
 // import { CheckBox } from 'react-native-elements'
 const options = {
@@ -45,9 +46,15 @@ class UserSetting extends React.Component {
         }
     };
 
+    static navigatorOptions = {
+        header: {
+            visible: false
+        }
+    };
+
     uploadImage = (uri, mime = 'application/octet-stream') => {
         // Prepare Blob support
-        
+
         const fs = RNFetchBlob.fs;
         const XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
         const Blob = RNFetchBlob.polyfill.Blob;
@@ -56,28 +63,28 @@ class UserSetting extends React.Component {
             const sessionId = new Date().getTime()
             let uploadBlob = null
             const imageRef = storage.ref('images').child(`${sessionId}`)
-        
+
             fs.readFile(uploadUri, 'base64')
-            .then((data) => {
-                return Blob.build(data, { type: `${mime};BASE64` })
-            })
-            .then((blob) => {
-                uploadBlob = blob
-                return imageRef.put(blob, { contentType: mime })
-            })
-            .then(() => {
-                uploadBlob.close()
-                return imageRef.getDownloadURL()
-            })
-            .then((url) => {
-                resolve(url)
-            })
-            .catch((error) => {
-                reject(error)
-            })
+                .then((data) => {
+                    return Blob.build(data, { type: `${mime};BASE64` })
+                })
+                .then((blob) => {
+                    uploadBlob = blob
+                    return imageRef.put(blob, { contentType: mime })
+                })
+                .then(() => {
+                    uploadBlob.close()
+                    return imageRef.getDownloadURL()
+                })
+                .then((url) => {
+                    resolve(url)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
         })
     }
-      
+
 
     componentDidMount() {
         console.log(' componentDidMount get props => ', this.props)
@@ -113,14 +120,14 @@ class UserSetting extends React.Component {
                     // this.props.navigation.navigate('Login')
 
                     this.props.navigation.replace({
-                      screen: 'Login',
+                        screen: 'Login',
                     });
 
                     // TODO
                     // this.props.navigator.push({
                     //     screen: 'Login'
                     //   });
-            
+
                 }
             })
 
@@ -156,7 +163,7 @@ class UserSetting extends React.Component {
             }
         });
     }
-    
+
     updateUser() {
 
         return fetch(API_URL + 'user/' + this.state.user.userid, {
@@ -166,8 +173,9 @@ class UserSetting extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(
-                {...this.state.user,
-                    userpic : this.state.user.userpic.uri
+                {
+                    ...this.state.user,
+                    userpic: this.state.user.userpic.uri
                 }),
         })
             .then((response) => response.json())
@@ -273,12 +281,12 @@ class UserSetting extends React.Component {
 
     render() {
         console.log(' render get props => ', this.props)
-        
+
         if (this.state.user.userid) {
             return (
                 <View style={{ flex: 1 }}>
 
-                    <HeaderBack 
+                    <HeaderBack
                         header={"Setting"}
                         navigator={this.props.navigator}
                     />
@@ -292,15 +300,37 @@ class UserSetting extends React.Component {
                     /> */}
 
 
+                    <View style={{ width: '100%', height: '30%', flexDirection: 'column' }}>
+                            <Image source={this.state.user.userpic} style={{ width: '100%', height: '100%' }} />
+                            <View style={{ opacity: 0.7, backgroundColor: 'white', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+                            <View style={{ opacity: 0.4, backgroundColor: 'black', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+                            <View style={{alignItems:'center', justifyContent:'center' ,position: 'absolute' , bottom: 0, right: 0, left: 0, top: 0 } }>
+                                {/* <Text style={styles.desStyle}> </Text> */}
+                                <TouchableOpacity onPress={() => { this.chooseImage() }}>
+
+                                    <Image source={this.state.user.userpic} style={styles.imgStyle} />
+                                    <Icon
+                                        raised
+                                        // reverse
+                                        name={'edit'}
+                                        type={'font-awesome'}
+                                        color={'grey'}
+                                        size={15}
+                                        containerStyle={{ position: 'absolute', left: 140, top: 155, zIndex: 40 }} />
+
+                                </TouchableOpacity>
+                            </View>
+                        </View>
 
                     <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
 
+
                         <View style={{ padding: 20 }}>
-                            <View style={styles.viewChooseImg}>
+                            {/* <View style={styles.viewChooseImg}>
                                 <TouchableOpacity onPress={() => { this.chooseImage() }}>
                                     <Image source={this.state.user.userpic} style={styles.imgStyle} />
                                 </TouchableOpacity>
-                            </View>
+                            </View> */}
                             <View style={{}}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <View style={{ alignItems: 'flex-start' }}>
@@ -360,9 +390,9 @@ class UserSetting extends React.Component {
                                         //   screen: 'Login'
                                         // });
                                         this.props.navigation.replace({
-                                          screen: 'Login',
+                                            screen: 'Login',
                                         });
-                                
+
                                     });
                                 }}
                             />
@@ -375,7 +405,7 @@ class UserSetting extends React.Component {
             )
         }
         else {
-            return <View/>
+            return <View />
         }
     }
 }
@@ -384,8 +414,8 @@ const styles = StyleSheet.create({
     buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
     scrollStyle: { flexDirection: 'column', backgroundColor: "white", flex: 1 },
     viewChooseImg: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-    imgStyle: { alignSelf: 'flex-start', width: 200, height: 200 },
-    desStyle: { marginBottom: 16, fontSize: 20 },
+    imgStyle: { alignSelf: 'flex-start', width: 200, height: 200, borderRadius: 100 },
+    desStyle: { marginBottom: 16, fontSize: 16 },
     viewBtn: { flexDirection: 'column', height: 55, width: '100%' },
     topicStyle: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
     setBtnStyle: { backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center' },

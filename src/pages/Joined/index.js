@@ -36,6 +36,12 @@ class Joined extends React.Component {
         users: []
     };
 
+    static navigatorOptions = {
+        header: {
+            visible: false
+        }
+    };
+
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
         fetch(API_URL + 'get-join/2')
@@ -59,9 +65,9 @@ class Joined extends React.Component {
 
     render() {
         const userid = this.props.navigation.getParam('userid', '');
-        
+
         alert(this.state.users.length)
-        
+
         return (
             <View style={{ flex: 1 }}>
                 <HeaderBack
@@ -105,7 +111,7 @@ class Joined extends React.Component {
                     <View>
                         <Footer
 
-                            navigator={this.props.navigator}
+                            navigator={this.props.navigation.navigate}
                             pm={userid}
 
                         // navigate ={this.props.navigation.navigate}

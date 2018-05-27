@@ -16,6 +16,11 @@ const { width } = Dimensions.get("window");
 
 // Wi Login an
 class Login extends React.Component {
+  static navigatorOptions = {
+    header: {
+      visible: false
+    }
+  };
   state = {
     userid: "5709650278",
     password: "",
@@ -43,15 +48,20 @@ class Login extends React.Component {
     }).catch(err => {
       console.error(err)
     });
-    
+
   };
 
+  handleGetCookies = () => {
+    let cookiejaa = CustomTabs.getCookie()
 
+    console.log(`Cookies value: ${cookiejaa}`);
+
+  }
 
   login() {
     alert('http://192.168.1.11:8000/api/chk-first-login/' + this.state.userid)
     // fetch('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-    fetch(API_URL + 'chk-first-login')
+    fetch(API_URL + 'chk-first-login/' + this.state.userid)
 
 
       .then((response) => {
@@ -104,7 +114,7 @@ class Login extends React.Component {
   //   console.log('555555555555555555555')
 
   //   return (
-      
+
   //     <View>
   //       <Text>
   //         lllllllllllllllllllllllllllllllllllllllll
@@ -118,7 +128,7 @@ class Login extends React.Component {
   //     />
   //     </View>
 
-     
+
   //   )
   // }
 
@@ -201,7 +211,15 @@ class Login extends React.Component {
             <TouchableOpacity onPress={this.handleClick}>
 
               <View style={styles.button}>
-                <Text style={styles.text}>Open</Text>
+                <Text style={styles.text}>Open Authentication</Text>
+              </View>
+
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.handleGetCookies}>
+
+              <View style={styles.button}>
+                <Text style={styles.text}>Open Cookie</Text>
               </View>
 
             </TouchableOpacity>

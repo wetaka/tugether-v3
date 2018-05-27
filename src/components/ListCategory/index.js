@@ -86,9 +86,9 @@ class ListCategory extends React.PureComponent {
               }}>
               {/* <Image source={HomeIcon} style={{ width: 20, height: 20, backgroundColor: (this.state.isSelect === item.id) ? 'green' : 'white' }} */}
           {/* /> */}
-          <Icon name={icon.iconName} type={icon.iconType} size={20}  color={(this.props.isSelectCategory === item.id) ? 'green' : 'white'}
+          <Icon name={icon.iconName} type={icon.iconType} size={20}  color={(this.props.isSelectCategory === item.id) ? '#f9e076' : 'white'}
             />          
-              <Text style={{fontSize: 15, alignSelf: 'center', color: (this.props.isSelectCategory === item.id) ? 'green' : 'white'}}>
+              <Text style={{fontSize: 15, alignSelf: 'center', color: (this.props.isSelectCategory === item.id) ? '#f9e076' : 'white'}}>
                 { this.limitCategoryText(item.categoryname) }
             </Text>
     
@@ -116,7 +116,7 @@ class ListCategory extends React.PureComponent {
 
 
 const styles = StyleSheet.create({
-    iconStyle:{padding:10, paddingTop: 15, width:140 ,backgroundColor: 'red', alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'column' },
+    iconStyle:{padding:10, paddingTop: 15, width:140 ,backgroundColor: 'rgb(225,101,74)', alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'column' },
     textStyle:{fontSize: 15, alignSelf: 'center' },
 
   })

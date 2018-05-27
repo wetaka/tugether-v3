@@ -18,7 +18,7 @@ export default class HeaderBack extends Component {
 
         return (
 
-            <View style={{ height: 55, width: '100%', backgroundColor: 'red', flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 10 }}>
+            <View style={{ height: 55, width: '100%', backgroundColor: 'rgb(225,101,74)', flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 10 }}>
                 <TouchableOpacity
 
                     onPress={() => {

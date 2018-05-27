@@ -67,9 +67,10 @@ const { width, height } = Dimensions.get('window');
 
 class Home extends React.Component {
 
-  static navigatorStyle = {
-    navBarHidden: true,
-    drawUnderNavBar: true
+  static navigatorOptions = {
+   header: {
+     visible :false 
+   }
   };
 
   state = {
@@ -237,7 +238,7 @@ class Home extends React.Component {
           console.log(data)
 
           this.setState({
-            event: [...data.data],
+            event: this.setEventAll(data.data),
             maxSize: data.max_size,
           }, () => {
             console.log("test search", this.state)

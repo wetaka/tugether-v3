@@ -30,6 +30,11 @@ const options = {
 
 class UpdateEvent extends React.Component {
 
+    static navigatorOptions = {
+        header: {
+            visible: false
+        }
+    };
 
     state = {
         category: [],

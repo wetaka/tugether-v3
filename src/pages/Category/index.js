@@ -38,10 +38,14 @@ const active = true
 class Category extends React.Component {
     state = {
         category: [],
-
-
     }
 
+    static navigatorOptions = {
+        header: {
+            visible: false
+        }
+    };
+    
     componentDidMount() {
         this.getCategories()
     }

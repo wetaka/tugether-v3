@@ -9,7 +9,7 @@ export default class HeaderMain extends Component {
     render() {
         return (
 
-            <View style={{ height: 55, width: '100%', backgroundColor: 'red' }}>
+            <View style={{ height: 55, width: '100%', backgroundColor: 'rgb(225,101,74)' }}>
 
 
                 <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -33,13 +33,16 @@ export default class HeaderMain extends Component {
                                 // Actions.CreateEvent();
                                 // this.props.navigate('CreateEvent')
 
-                                
-                                this.props.navigator.push({
-                                    screen: 'CreateEvent',
-                                    passProps: {
-                                        navigator: this.props.navigator,
-                                      },
-                                  });
+                                this.props.navigator('CreateEvent',{
+                                    userid: this.props.pm
+                                  })
+
+                                // this.props.navigator({
+                                //     screen: 'CreateEvent',
+                                //     passProps: {
+                                //         navigator: this.props.navigator,
+                                //       },
+                                //   });
                             }}
 
                         >
@@ -55,13 +58,19 @@ export default class HeaderMain extends Component {
                                 // Actions.CreateEvent();
                                 // this.props.navigate('UserSetting')
 
-                                this.props.navigator.push({
-                                    screen: 'UserSetting',
-                                    passProps: {
+                                this.props.navigator('UserSetting',{
+                                    userid: this.props.pm
+                                    // navigator: this.props.navigation.navigate 
+                                    
+                                  })
+                                
+                                // this.props.navigator({
+                                //     screen: 'UserSetting',
+                                //     passProps: {
                                       
-                                        navigator: this.props.navigator,
-                                      },
-                                  });
+                                //         navigator: this.props.navigator,
+                                //       },
+                                //   });
                             }}
 
                         >

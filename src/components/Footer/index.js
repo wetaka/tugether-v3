@@ -14,6 +14,7 @@ import React, { Component } from 'react';
 
 export default class Footer extends Component {
   render() {
+    console.log('Footer', this.props)
     return (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity
@@ -21,16 +22,16 @@ export default class Footer extends Component {
           onPress={() => { 
             // Actions.Home({ userid: this.props.pm }) 
             
-            // this.props.navigator.push('Home',{
-            //   userid: this.props.pm
-            // })
-            this.props.navigate({
-            // this.props.navigator.push({
-              screen: 'Home',
-              passProps: {
-                userid: this.props.pm
-              },
-            });
+            this.props.navigator('Home',{
+              userid: this.props.pm
+            })
+            // this.props.navigate({
+            // // this.props.navigator.push({
+            //   screen: 'Home',
+            //   passProps: {
+            //     userid: this.props.pm
+            //   },
+            // });
           }}
         >
           <Image source={HomeIcon} style={{ width: '20%', height: '50%' }}
@@ -47,18 +48,18 @@ export default class Footer extends Component {
           onPress={() => { 
 
             // Actions.Main({ userid: this.props.pm })
-            // this.props.navigator.push('Notificate',{
-            //   userid: this.props.pm
-            // })
+            this.props.navigator('Notificate',{
+              userid: this.props.pm
+            })
 
             // this.props.navigator.push({
-            this.props.navigate({
-              screen: 'Notificate',
-              passProps: {
-                userid: this.props.pm,
-                navigator: this.props.navigator,
-              },
-            });
+            // this.props.navigate({
+            //   screen: 'Notificate',
+            //   passProps: {
+            //     userid: this.props.pm,
+            //     navigator: this.props.navigator,
+            //   },
+            // });
 
           }}
         >
@@ -71,18 +72,18 @@ export default class Footer extends Component {
           onPress={() => { 
             // Actions.Main({ userid: this.props.pm })
 
-            // this.props.navigator.push('Main',{
-            //   userid: this.props.pm
-            // })
+            this.props.navigator('Main',{
+              userid: this.props.pm
+            })
 
             // this.props.navigator.push({
-              this.props.navigate({
-              screen: 'Main',
-              passProps: {
-                userid: this.props.pm,
-                navigator: this.props.navigator,
-              },
-            });
+            //   this.props.navigate({
+            //   screen: 'Main',
+            //   passProps: {
+            //     userid: this.props.pm,
+            //     navigator: this.props.navigator,
+            //   },
+            // });
           }}
         >
           <Image source={ProfileIcon} style={{ width: '20%', height: '50%' }} />

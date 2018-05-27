@@ -79,7 +79,8 @@ const RootNavigator = createStackNavigator({
   Joined: { screen: Joined },
   // MasonryPage: { screen: MasonryPage },
 }, {
-  initialRouteName: 'Login',
+  initialRouteName: 'Home',
+  headerMode: 'Screen'
 })
 
 export default RootNavigator;

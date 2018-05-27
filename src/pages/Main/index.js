@@ -59,61 +59,77 @@ class Main extends React.Component {
   };
 
 
+  
+  static navigatorOptions = {
+    header: {
+      visible :false 
+    }
+   };
 
-  renderPost(item) {
-    // console.log('--------- tert')
-    // console.log('===> ', item.eventid)
-    // console.log(item)
-    return (
+  // renderPost(item) {
+  //   // console.log('--------- tert')
+  //   // console.log('===> ', item.eventid)
+  //   // console.log(item)
+  //   return (
 
 
-      <View style={styles.btnItem}>
-        <TouchableOpacity
-          onPress={() => {
-            //   String a = "test1";
-            //   String b = "test b";
-            //   System.out.print('a is:' + a);
-            // alert(this.state.userid)
+  //     <View style={styles.btnItem}>
+  //       <TouchableOpacity
+  //         onPress={() => {
+  //           //   String a = "test1";
+  //           //   String b = "test b";
+  //           //   System.out.print('a is:' + a);
+  //           // alert(this.state.userid)
 
-            // Actions.Description({ eventid: item.id });
+  //           // Actions.Description({ eventid: item.id });
 
-            // this.props.navigator.push({
-            //   screen: 'Description',
-            //   passProps: {
-            //     eventid: item.id,
-            //   },
-            // });
+  //           // this.props.navigator.push({
+  //           //   screen: 'Description',
+  //           //   passProps: {
+  //           //     eventid: item.id,
+  //           //   },
+  //           // });
 
             
 
-            this.props.navigation.navigate('Description',{
-              eventid: item.id
-            })
-          }}>
-          <Transition shared='circle'>
-            <Image source={imgposter1} style={styles.posterImg} />
-          </Transition>
-          <Text style={styles.topicStyle}>{item.topic}</Text>
-          <Text style={{ fontSize: 20 }}>___________________</Text>
-          <View style={styles.desStyle}>
-            <View style={styles.stdStyle}>
-              <Text style={{ fontSize: 15 }}>{item.startdate}</Text>
-              {/* <Text style={{ fontSize: 15 }}>{item.date}</Text> */}
-            </View>
-            <View style={styles.imgLine}>
-              <Image source={line} style={{ alignSelf: 'flex-start' }} />
-              <View>
-                <Image source={location} style={styles.imgLocation} />
-                <Text style={{ fontSize: 15 }}>{item.location}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
+  //           this.props.navigation.navigate('Description',{
+  //             eventid: item.id
+  //           })
+  //         }}>
+  //         <Transition shared='circle'>
+  //           <Image source={imgposter1} style={styles.posterImg} />
+  //         </Transition>
+  //         <Text style={styles.topicStyle}>{item.topic}</Text>
+  //         <Text style={{ fontSize: 20 }}>___________________</Text>
+  //         <View style={styles.desStyle}>
+  //           <View style={styles.stdStyle}>
+  //             <Text style={{ fontSize: 15 }}>{item.startdate}</Text>
+  //             {/* <Text style={{ fontSize: 15 }}>{item.date}</Text> */}
+  //           </View>
+  //           <View style={styles.imgLine}>
+  //             <Image source={line} style={{ alignSelf: 'flex-start' }} />
+  //             <View>
+  //               <Image source={location} style={styles.imgLocation} />
+  //               <Text style={{ fontSize: 15 }}>{item.location}</Text>
+  //             </View>
+  //           </View>
+  //         </View>
+  //       </TouchableOpacity>
+  //     </View>
 
-    )
+  //   )
+  // }
+
+  setEventAll(data) {
+    return data.map((d) => {
+      return {
+        ...d,
+        // posterpic: { uri: d.posterpic },
+        posterpic: imgposter1,
+        eventstdate: new Date(d.eventstdate)
+      };
+    });
   }
-
 
   getCurrentUser() {
     console.log("getCurrentUser")
@@ -160,7 +176,7 @@ class Main extends React.Component {
       .then((data) => {
         console.log('get eventid from upcoming event', data)
         this.setState({
-          event: [...data.data],
+          event: this.setEventAll(data.data),
           maxSize: data.max_size,
         }, () => { console.log("test state upcoming", this.state) });
         //console.log(this.props.eventid)
@@ -179,7 +195,7 @@ class Main extends React.Component {
       .then((data) => {
         console.log('get your eventid', data)
         this.setState({
-          event: [...data.data],
+          event: this.setEventAll(data.data),
           maxSize: data.max_size,
 
         }, () => { console.log("test state get your event", this.state) });
@@ -202,7 +218,7 @@ class Main extends React.Component {
       .then((data) => {
         console.log('get eventid from past event', data)
         this.setState({
-          event: [...data.data],
+          event: this.setEventAll(data.data),
           maxSize: data.max_size,
 
         }, () => { console.log("test state past", this.state) });
@@ -226,7 +242,21 @@ class Main extends React.Component {
 
   }
 
+  setFormatDate(date, month, year) {
+    date = "0" + date
+    month = "0" + month
+    return date.substring(date.length - 2, date.length) + "-" + month.substring(month.length - 2, month.length) + "-" + year
+  }
+
+  setFormatTime(hours, minutes) {
+    hours = "0" + hours
+    minutes = "0" + minutes
+    return hours.substring(hours.length - 2, hours.length) + ":" + minutes.substring(minutes.length - 2, minutes.length)
+  }
+
+
   render() {
+    console.log('render Main Props => ', this.props.navigation.navigate)
     const userid = this.props.navigation.getParam('userid', '');
     const { user } = this.state;
 
@@ -237,7 +267,7 @@ class Main extends React.Component {
       <View style={{ flex: 1 }}>
 
         <HeaderMain
-          navigator={this.props.navigator}
+          navigator={this.props.navigation.navigate}
         />
         {/* <View style={styles.searchView}>
           <SearchHeader
@@ -245,6 +275,8 @@ class Main extends React.Component {
             navigate ={this.props.navigation.navigate}
           /> */}
         {/* </View> */}
+
+
 
         <View>
           <View style={styles.userStyle}>
@@ -306,12 +338,155 @@ class Main extends React.Component {
           </View>
         </View>
 
+        < ScrollView >
+          <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
 
-        <FlatList
+            <View style={{ flex: 1 }}>
+              {this.state.event
+                .filter((c, index) => index % 2 === 0)
+                .map((c) => (
+
+                  <View key={c.id} style={[styles.assetContainer, { backgroundColor: '#ffffff' }]}>
+                    <TouchableOpacity
+                      onPress={() => {
+
+                        // this.props.navigator.push({
+                        //   screen: 'Description',
+                        //   sharedElements: ["55"],
+                        //   passProps: {
+                        //     eventid: "55",
+                        //     image: c.posterpic
+                        //   },
+                        // });
+                        this.props.navigation.navigate('Description', {
+                          eventid: c.id,
+                          image: c.posterpic,
+                        });
+
+                      }}>
+
+                      <View>
+                        {/* <View style={{ flex: 1 }}> */}
+
+                        <Image source={imgposter1}
+                          resizeMode={'cover'}
+                          style={styles.posterImg} />
+
+                      </View>
+
+                      <Text style={styles.topicStyle}>{c.topic}</Text>
+                      <Text style={{ fontSize: 20 }}>________________________________</Text>
+                      <View style={styles.desStyle}>
+                        <View style={styles.stdStyle}>
+                          {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>{c.eventstdate}</Text> */}
+                          <Text style={{ fontSize: 15, alignSelf: 'center' }}>{this.setFormatDate(c.eventstdate.getDate(), c.eventstdate.getMonth() + 1, c.eventstdate.getFullYear())}</Text>
+
+                        </View>
+                        <View style={styles.imgLine}>
+                          <Image source={line} style={{ alignSelf: 'flex-start' }} />
+                          <View style={{ justifyContent: 'center', flex: 1 }}>
+                            <Image source={location} style={styles.imgLocation} />
+                            <Text style={{ fontSize: 15, alignSelf: 'center' }}>{c.location}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                  // <View>
+                  //   <Image source={c.posterpic}
+                  //     style={styles.posterImg} />
+                  //   <Text>
+                  //     Hello Boy {c.topic}
+                  //   </Text>
+                  // </View>
+                ))}
+
+            </View>
+            <View style={{ flex: 1 }}>
+              {this.state.event
+                .filter((c, index) => index % 2 !== 0)
+                .map((c) => (
+
+                  <View key={c.id} style={[styles.assetContainer, { backgroundColor: '#ffffff' }]}>
+                    <TouchableOpacity
+                      onPress={() => {
+
+                        // this.props.navigator.push({
+                        //   screen: 'Description',
+                        //   // sharedElements: ["test"],
+                        //   passProps: {
+                        //     eventid: "" + c.id,
+                        //     image: c.posterpic
+                        //   },
+                        // });
+
+                        this.props.navigation.navigate('Description', {
+                          eventid: c.id,
+                          image: c.posterpic,
+                        });
+
+                      }}>
+
+                      <View>
+                        {/* <View style={{ flex: 1 }}> */}
+
+
+                        {/* <SharedElementTransition
+                          style={{ flex: 1 }}
+                          sharedElementId={"test"}
+                        > */}
+                        <Image source={imgposter1}
+                          resizeMode={'cover'}
+                          style={styles.posterImg} />
+
+                        {/* </SharedElementTransition> */}
+                      </View>
+
+
+                      <Text style={styles.topicStyle}>{c.topic}</Text>
+                      <Text style={{ fontSize: 20 }}>________________________________</Text>
+                      <View style={styles.desStyle}>
+                        <View style={styles.stdStyle}>
+                          <Text style={{ fontSize: 15, alignSelf: 'center' }}>{this.setFormatDate(c.eventstdate.getDate(), c.eventstdate.getMonth() + 1, c.eventstdate.getFullYear())}</Text>
+
+                          {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>{c.eventstdate}</Text> */}
+                        </View>
+                        <View style={styles.imgLine}>
+                          <Image source={line} style={{ alignSelf: 'flex-start' }} />
+                          <View style={{ justifyContent: 'center', flex: 1 }}>
+                            <Image source={location} style={styles.imgLocation} />
+                            <Text style={{ fontSize: 15, alignSelf: 'center' }}>{c.location}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                  // <View>
+                  //   <Image source={imgposter2}
+                  //     style={styles.posterImg} />
+                  //   <Text>
+                  //     Hello girl {c.topic}
+                  //   </Text>
+                  // </View>
+                ))}
+
+            </View>
+            {/* <View>
+                            {this.posters.map((c) => (<Image source={(c.id % 2 !== 0) ? imgposter1 : imgposter2}
+                                style={styles.posterImg} />
+                            ))}
+                        </View> */}
+
+
+
+          </View>
+        </ScrollView >
+
+        {/* <FlatList
           data={this.state.event}
           renderItem={({ item }) => this.renderPost(item)}
           numColumns={2}
-        />
+        /> */}
         <View style={styles.buttonView}>
 
           <Image source={Buttonbar}
@@ -324,7 +499,7 @@ class Main extends React.Component {
               pm={(this.props.navigation && this.props.navigation.state && this.props.navigation.state.params && this.props.navigation.state.params.userid) ? this.props.navigation.state.params.userid : null}
              */}
             <Footer
-              navigator={this.props.navigator}
+              navigator={this.props.navigation.navigate}
               pm={userid}
 
             />
@@ -339,20 +514,38 @@ class Main extends React.Component {
 const styles = StyleSheet.create({
   btnItem: { borderWidth: 2, borderColor: 'gray', width: '50%' },
   buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
-  posterImg: { alignSelf: 'flex-start', width: '100%', height: 300 },
+
+  posterImg: { alignSelf: 'flex-start', width: '100%', borderTopLeftRadius: 10, borderTopRightRadius: 10 },
   topicStyle: { fontSize: 20, alignSelf: 'center' },
   desStyle: { flexDirection: 'row', alignItems: 'center' },
   stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },
-  imgLocation: { alignSelf: 'center', width: 30, height: 30 },
+  imgLocation: { alignSelf: 'center', width: 20, height: 20 },
   posterStyle: { borderWidth: 2, borderColor: 'gray', width: '50%' },
+
   searchView: { flexDirection: 'column', height: 55, width: '100%' },
   buttonView: { flexDirection: 'column', height: 55 },
   userStyle: { paddingVertical: 7, flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' },
   userIDsty: { fontSize: 25, fontWeight: 'bold' },
-  imgUser: { alignSelf: 'flex-start', width: 90, height: 90 },
+  imgUser: { alignSelf: 'flex-start', width:150 , height: 150, borderRadius:100 },
   btnEvent: { backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' },
-
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  item: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  assetContainer: {
+    margin: 5,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  asset: {
+    flex: 1,
+    borderRadius: 6,
+  },
 
 })
 
