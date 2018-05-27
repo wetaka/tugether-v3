@@ -51,10 +51,11 @@ class Description extends React.Component {
             posterpic: "",
             // startdate: "",
             // enddate: "",
-            eventstdate: "",
+            eventstdate: new Date(),
             eventenddate: "",
             active: true,
-            limited: 0
+            limited: 0,
+            join: []
         },
         user: {
             userid: "",
@@ -62,7 +63,8 @@ class Description extends React.Component {
             lastname: ""
         },
         commentstr: "",
-        comment: []
+        comment: [],
+        joinbtn: "Join"
     };
 
     getEvent() {
@@ -93,10 +95,14 @@ class Description extends React.Component {
                         eventstdate: new Date(data.eventstdate),
                         eventenddate: "" + data.eventenddate,
                         active: data.active,
-                        limited: data.limited
+                        limited: data.limited,
+                        join: [...data.join]
                     }
 
-                });
+                }, () => {
+                    this.checkjoin()
+                }
+                );
                 //console.log(this.props.eventid)
             })
             .catch((error) => {
@@ -135,8 +141,9 @@ class Description extends React.Component {
             })
     }
 
-    addJoin() {
-        fetch(API_URL + 'join-user' + this.state.user.userid, {
+    addjoin() {
+        console.log("Add join")
+        fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
@@ -146,6 +153,10 @@ class Description extends React.Component {
                 ...this.state.event,
                 join: [...this.state.event.join, this.state.user.userid]
             }
+            // , () => {
+
+            //     this.checkjoin()
+            // }
             ),
         })
             .then((response) => response.json())
@@ -157,6 +168,70 @@ class Description extends React.Component {
                 console.error(error);
             });
     }
+
+    deljoin() {
+        return new Promise((resolve, reject) => {
+            console.log("Delete Join")
+            this.getEvent()
+                .then(() => {
+                    // console.log("Delete Join")
+                    console.log("New Join", newjoin)
+                    let newjoin = this.state.event.join.filter(uid => uid !== this.state.user.userid)
+                    // console.log("New Join", newjoin)
+                    fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
+                        method: 'PUT',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ...this.state.event,
+                            join: newjoin
+                        }
+                        // , () => {
+                        //     this.checkjoin()
+                        // }
+                        ),
+                    })
+                        .then((response) => response.json())
+                        .then((responseJson) => {
+                            console.log('vinaja', responseJson)
+
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                        });
+
+                })
+            // .then(() => {
+            //     fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
+            //         method: 'PUT',
+            //         headers: {
+            //             Accept: 'application/json',
+            //             'Content-Type': 'application/json',
+            //         },
+            //         body: JSON.stringify({
+            //             ...this.state.event,
+            //             join: newjoin
+            //         }, () => {
+            //             this.checkjoin()
+            //         }
+            //         ),
+            //     })
+            //         .then((response) => response.json())
+            //         .then((responseJson) => {
+            //             console.log('vinaja', responseJson)
+
+            //         })
+            //         .catch((error) => {
+            //             console.error(error);
+            //         });
+            // }
+            // )
+        })
+
+    }
+
 
 
     addComment(commentstr) {
@@ -211,34 +286,67 @@ class Description extends React.Component {
         date = "0" + date
         month = "0" + month
         return date.substring(date.length - 2, date.length) + "-" + month.substring(month.length - 2, month.length) + "-" + year
-      }
-    
-      setFormatTime(hours, minutes) {
+    }
+
+    setFormatTime(hours, minutes) {
         hours = "0" + hours
         minutes = "0" + minutes
         return hours.substring(hours.length - 2, hours.length) + ":" + minutes.substring(minutes.length - 2, minutes.length)
-      }
-    
-
-    renderPost(item) {
-        console.log(item)
-        const dayitem = new Date(item.createdate)
-
-        return (
-
-            <View style={{ borderWidth: 2, borderColor: '#e1dbdb', width: '100%', paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}>
-
-                <View style={styles.desStyle}>
-                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.createby}    </Text>
-                    <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
-                </View>
-                <Text style={{ fontSize: 15 }}>{item.details}</Text>
-
-                {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
+    }
 
 
-            </View>
-        )
+    // renderPost(item) {
+    //     console.log(item)
+    //     const dayitem = new Date(item.createdate)
+
+    //     return (
+
+    //         <View style={{ borderWidth: 2, borderColor: '#e1dbdb', width: '100%', paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}>
+
+    //             <View style={styles.desStyle}>
+    //                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.createby}    </Text>
+    //                 <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
+    //             </View>
+    //             <Text style={{ fontSize: 15 }}>{item.details}</Text>
+
+    //             {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
+
+
+    //         </View>
+    //     )
+    // }
+
+    checkjoin() {
+        if (this.state.event.join.find((id) => this.state.user.userid === id)) {
+            // this.setState({
+            //     event: {
+            //         ...this.state.event,
+            //         // userpic: kaimook, //TODO remove ******************************************************      
+            //         categoryid: this.state.event.categoryid.filter((id) => id !== cid)
+            //     }
+            // })
+
+            console.log("Foundddd!!!!!!!", this.state.user.userid)
+            this.setState({
+                joinbtn: "Joined"
+            })
+
+            // return true
+        }
+        else {
+            // this.setState({
+            //     event: {
+            //         ...this.state.event,
+            //         // userpic: kaimook //TODO remove ******************************************************
+            //         categoryid: [...this.state.event.categoryid, cid]
+            //     }
+            // })
+            this.setState({
+                joinbtn: "Join"
+            })
+            // console.log("Not Found")
+            // return false
+        }
     }
 
     render() {
@@ -257,15 +365,57 @@ class Description extends React.Component {
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ flex: 1 }}>
                         <View>
+
                             <TouchableOpacity
                                 style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
-                                onPress={() => { this.addJoin() }}
+                                onPress={() => { (this.state.event.joinbtn === "Join") ? this.addjoin() : this.deljoin() }}
                             >
                                 <Text style={{ color: 'white', fontSize: 30 }}>
-                                    Join Event
+                                    {this.state.joinbtn}
                                 </Text>
                             </TouchableOpacity>
+
+
+                            {/* {
+                            (this.state.event.createby === this.state.user.userid)
+                                ? (
+                                    <TouchableOpacity
+                                        style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
+                                        onPress={() => {
+                                            // Actions.CreateEvent();
+                                            this.props.navigate('CreateEvent')
+                                        }}
+
+                                    >
+                                        <Text style={{ color: 'white', fontSize: 30 }}>
+                                            Edit
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                                : null
+                        }
+
+                        {
+                            (this.state.event.createby === this.state.user.userid)
+                                ? (
+                                    <TouchableOpacity
+                                        style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
+                                        onPress={() => {
+                                            this.props.navigate('UserSetting')
+
+                                        }}
+
+                                    >
+                                        <Text style={{ color: 'white', fontSize: 30 }}>
+                                            All Join
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                                : null
+                        } */}
+
                         </View>
+
                         {/* <Transition shared='circle'> */}
                         {/* <Transition shared={this.props.navigation.state.params.eventid}> */}
                         {/* <Image source={imgposter1}
@@ -283,7 +433,7 @@ class Description extends React.Component {
                             <Text style={{ fontSize: 23 }}>{event.topic}</Text>
                             {/* <Text style={{ fontSize: 15 }}>Date    : {event.eventstdate}</Text> */}
                             <Text style={{ fontSize: 15 }}>Date    : {this.setFormatDate(event.eventstdate.getDate(), event.eventstdate.getMonth() + 1, event.eventstdate.getFullYear())}</Text>
-                            <Text style={{ fontSize: 15 }}>time    : {this.setFormatTime(event.eventstdate.getHours(),event.eventstdate.getMinutes())} </Text>
+                            <Text style={{ fontSize: 15 }}>time    : {this.setFormatTime(event.eventstdate.getHours(), event.eventstdate.getMinutes())} </Text>
                             <Text style={{ fontSize: 15 }}>Place   : {event.location}</Text>
                             <Text style={{ fontSize: 15 }}>Contact : </Text>
                             <View style={styles.iconView}>
