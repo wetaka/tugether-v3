@@ -282,23 +282,28 @@ class CreateEvent extends React.Component {
                 //         posterpic: { uri: imageRes.imageUrl },
                 //     },
                 // });
-
+                console.log("Check state : ", this.state)
                 await this.saveEvent(imageRes.imageUrl)
-                this.setState({
+                await this.setState({
                     loader: false
                 }, () => {
                     alert("Successful")
+                    console.log("Event id before change page:", this.state.id)
+
+                    // this.props.navigation.navigate('Description', {
+                    //     eventid: this.state.id,
+                    // });
                 }
                 )
-                console.log("Event id before change page but after saveEvent:", this.state.id)
-                
+                // console.log("Event id before change page but after saveEvent:", this.state.id)
+
 
             })
             .then(() => {
                 console.log("Event id before change page:", this.state.id)
-                // this.props.navigation.navigate('Description', {
-                //     eventid: 1,
-                // });
+                this.props.navigation.navigate('Description', {
+                    eventid: this.state.id,
+                });
             })
             .catch((error) => {
                 console.error(error);
@@ -435,105 +440,113 @@ class CreateEvent extends React.Component {
     }
 
     saveEvent(image) {
-        if (!this.validateNull(this.state.event.topic)) {
-            alert("Please enter Topic")
-            return;
-        }
-        if (!this.validateNull(this.state.event.location)) {
-            alert("Please enter location")
-            return;
-        }
-        if (!this.validateNotZero(this.state.event.limited)) {
-            alert("Please enter limited")
-            return;
-        }
-        if (!this.validateMoreThan10000(this.state.event.limited)) {
-            alert("Limited can not more than 10000")
-            return;
-        }
-        if (!this.validateHashTag(this.state.event.hashtag)) {
-            alert("Last words cannot have #")
-            return;
-        }
-        if (!this.validateSpace(this.state.event.hashtag)) {
-            alert("Cannot have white spaces!")
-            return;
-        }
-        if (this.state.event.categoryid === []) {
-            alert("Category is null")
-            return;
-        }
+        return new Promise((resolve, reject) => {
+            if (!this.validateNull(this.state.event.topic)) {
+                alert("Please enter Topic")
+                return;
+            }
+            if (!this.validateNull(this.state.event.location)) {
+                alert("Please enter location")
+                return;
+            }
+            if (!this.validateNotZero(this.state.event.limited)) {
+                alert("Please enter limited")
+                return;
+            }
+            if (!this.validateMoreThan10000(this.state.event.limited)) {
+                alert("Limited can not more than 10000")
+                return;
+            }
+            if (!this.validateHashTag(this.state.event.hashtag)) {
+                alert("Last words cannot have #")
+                return;
+            }
+            if (!this.validateSpace(this.state.event.hashtag)) {
+                alert("Cannot have white spaces!")
+                return;
+            }
+            if (this.state.event.categoryid === []) {
+                alert("Category is null")
+                return;
+            }
 
-        const date_now = new Date()
-        let c = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
-        let d = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
+            const date_now = new Date()
+            let c = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
+            let d = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
 
-        if (c.diff(d, 'days') <= 0) {
-            alert("Start Date cannot less than Today")
-            return;
-        } // 1
+            if (c.diff(d, 'days') <= 0) {
+                alert("Start Date cannot less than Today")
+                return;
+            } // 1
 
-        let e = moment([this.state.event.eventenddate.getFullYear(), this.state.event.eventenddate.getMonth(), this.state.event.eventenddate.getDate()]);
-        let f = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
+            let e = moment([this.state.event.eventenddate.getFullYear(), this.state.event.eventenddate.getMonth(), this.state.event.eventenddate.getDate()]);
+            let f = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
 
-        if (e.diff(f, 'days') < 0) {
-            alert("End Date cannot less than Start Date")
-            return;
-        } // 1
+            if (e.diff(f, 'days') < 0) {
+                alert("End Date cannot less than Start Date")
+                return;
+            } // 1
 
 
-        fetch(API_URL + 'event', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                topic: this.state.event.topic,
-                join: [
-                    this.state.user.userid
-                ],
-                createby: this.state.user.userid,
-                location: this.state.event.location,
-                approve: "1",
-                description: this.state.event.description,
-                facebook: this.state.event.facebook,
-                line: this.state.event.line,
-                web: this.state.event.web,
-                phone: this.state.event.phone,
-                hashtag: this.state.event.hashtag,
-                eventstdate: this.state.event.eventstdate,
-                eventenddate: this.state.event.eventenddate,
-                limited: this.state.event.limited,
-                categoryid: this.state.event.categoryid,
-                posterpic: (image) ? image : this.state.event.posterpic.uri
+            return fetch(API_URL + 'event', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: this.state.event.topic,
+                    join: [
+                        this.state.user.userid
+                    ],
+                    createby: this.state.user.userid,
+                    location: this.state.event.location,
+                    approve: "1",
+                    description: this.state.event.description,
+                    facebook: this.state.event.facebook,
+                    line: this.state.event.line,
+                    web: this.state.event.web,
+                    phone: this.state.event.phone,
+                    hashtag: this.state.event.hashtag,
+                    eventstdate: this.state.event.eventstdate,
+                    eventenddate: this.state.event.eventenddate,
+                    limited: this.state.event.limited,
+                    categoryid: this.state.event.categoryid,
+                    posterpic: (image) ? image : this.state.event.posterpic.uri
 
-            }),
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log('vinaja', responseJson)
-                this.setState({
-                    
-                        id: responseJson.id
-                    
-
-                },() => {
-                    console.log("responseJson after save event :", responseJson)
-                    console.log("Event id after save event :", this.state.id)
-                }
-                )
-               
-                
+                }),
             })
-            .catch((error) => {
-                console.error(error);
-            });
+                .then((response) => {
+                    console.log(response)
+                    return response.json()
+                })
+                .then((responseJson) => {
+                    console.log('vinaja', responseJson)
+                    this.setState({
+
+                        id: responseJson.id
+
+
+                    }, () => {
+                        console.log("responseJson after save event :", responseJson)
+                        console.log("Event id after save event :", this.state.id)
+                        resolve();
+                    }
+                    )
+
+
+                })
+                .catch((error) => {
+                    console.error(error);
+                    reject()
+                });
+        })
     }
+
 
     render() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 }} >
 
                 {
                     (this.state.loader)

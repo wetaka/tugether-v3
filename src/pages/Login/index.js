@@ -1,6 +1,6 @@
 import React from "react";
 import { Actions } from "react-native-router-flux";
-import { View, Text, Image, Dimensions, TouchableOpacity, AsyncStorage, StyleSheet, Linking, WebView } from "react-native";
+import { View, Text, Image, Dimensions, TouchableOpacity, AsyncStorage, StyleSheet, Linking, WebView, AppState } from "react-native";
 import TULogo from "../../Images/Logo.png";
 import CustomInput from "../../components/CustomInput";
 import CustomButton from "../../components/CustomButton";
@@ -11,6 +11,8 @@ import {
   ANIMATIONS_FADE,
   CustomTabs
 } from 'react-native-custom-tabs';
+import CookieManager from 'react-native-cookies';
+import { resolve } from "path";
 
 const { width } = Dimensions.get("window");
 
@@ -43,7 +45,7 @@ class Login extends React.Component {
   // };
 
   handleClick = () => {
-    CustomTabs.openURL('http://172.25.79.42:8000/oauth/login/tu/').then((launched) => {
+    CustomTabs.openURL('https://api.tu.ac.th/o/authorize/?client_id=Qzw4Fnulqrb1Mswk9nYUEUi2rHOHeyKClwq2IM1X&response_type=code&state=random_state_string').then((launched) => {
       console.log(`Launched custom tabs: ${launched}`);
     }).catch(err => {
       console.error(err)
@@ -51,12 +53,12 @@ class Login extends React.Component {
 
   };
 
-  handleGetCookies = () => {
-    let cookiejaa = CustomTabs.getCookie()
+  // handleGetCookies = () => {
+  //   let cookiejaa = CustomTabs.getCookie()
 
-    console.log(`Cookies value: ${cookiejaa}`);
+  //   console.log(`Cookies value: ${cookiejaa}`);
 
-  }
+  // }
 
   login() {
     alert('http://192.168.1.11:8000/api/chk-first-login/' + this.state.userid)
@@ -104,7 +106,31 @@ class Login extends React.Component {
       });
   }
 
+  componentDidMount(){
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
 
+  componentWillUnmount(){
+    AppState.removeEventListener('change' , this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if(nextAppState === 'active') {
+      // CookieManager
+      //   .get('http://192.168.1.10:8000')
+      //   .then((res) => console.log(res))
+      fetch('http://172.25.79.42:8000/api/user/', {
+        withCredentials: true,
+        credentials: 'same-origin'
+      }).then(res => {
+        // console.log('fecth get cook 1 => ', res.headers.get('set-cookie'));
+        console.log('fecth res', resolve)
+        
+        console.log('fecth', res.headers.get('set-cookie'))
+        
+      })
+    }
+  }
   // onClick = () => {
   //   console.log('Button Clicked');
   // }
@@ -216,13 +242,13 @@ class Login extends React.Component {
 
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.handleGetCookies}>
+            {/* <TouchableOpacity onPress={this.handleGetCookies}>
 
               <View style={styles.button}>
                 <Text style={styles.text}>Open Cookie</Text>
               </View>
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
