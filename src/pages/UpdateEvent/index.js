@@ -8,7 +8,7 @@ import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
-import { API_URL } from "../../config/api";
+import { API_URL, FB_FUNCTION_URL } from "../../config/api";
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider, Icon } from 'react-native-elements';
 import moment from 'moment';
@@ -216,7 +216,7 @@ class UpdateEvent extends React.Component {
         }
     }
 
-    saveEvent() {
+    saveEvent(image) {
 
         if (!this.validateNull(this.state.event.topic)) {
             alert("Please enter Topic")
@@ -272,7 +272,7 @@ class UpdateEvent extends React.Component {
             },
             body: JSON.stringify({
                 ...this.state.event,
-                posterpic: this.state.event.posterpic.uri
+                posterpic: (image) ? image : this.state.event.posterpic.uri
             }
             ),
         })
@@ -406,6 +406,40 @@ class UpdateEvent extends React.Component {
 
     }
 
+    uploadImage = (img) => {
+        return fetch(FB_FUNCTION_URL + 'storeImage', {
+            method: 'POST',
+            body: JSON.stringify({
+                image: img,
+            })
+        })
+            .then(res => res.json())
+            .then(async (imageRes) => {
+                console.log('Success pic', imageRes)
+
+                await this.saveEvent(imageRes.imageUrl)
+                // await AsyncStorage.setItem('CURRENT_USER', JSON.stringify(
+                //     {
+                //         ...this.state.user,
+                //         userpic: imageRes.imageUrl
+                //     })
+                // )
+
+                await this.setState({
+                    event: {
+                        ...this.state.event,
+                        posterpic: { uri: imageRes.imageUrl },
+                    },
+                });
+
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("Not Succes !!!!!!!!!!!!!")
+            })
+    }
+
+
     chooseImage() {
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
@@ -420,18 +454,22 @@ class UpdateEvent extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             }
             else {
-                let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                let source = {
+                    uri: response.uri, // present in <Image />
+                };
                 console.log(source);
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-                this.setState({
-                    event: {
-                        ...this.state.event,
-                        posterpic: source
-                    }
-                    // posterpic: source
-                });
+                // this.setState({
+                //     user: {
+                //         ...this.state.user,
+                //         userpic: source //TODO remove ******************************************************
+                //         // avatarSource: source
+                //     }
+                // }, () => {
+                this.uploadImage(response.data);
+                // });
             }
         });
     }

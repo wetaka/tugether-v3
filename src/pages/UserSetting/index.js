@@ -10,6 +10,7 @@ import HeaderBack from "../../components/HeaderBack";
 import HeaderMain from "../../components/HeaderMain";
 import HeaderText from "../../components/HeaderText";
 import { Icon } from 'react-native-elements';
+import { BallIndicator } from 'react-native-indicators';
 
 // import { CheckBox } from 'react-native-elements'
 const options = {
@@ -43,7 +44,8 @@ class UserSetting extends React.Component {
             categoryid: [],
             userpic: kaimook,
 
-        }
+        },
+        loader: true
     };
 
     static navigatorOptions = {
@@ -51,7 +53,12 @@ class UserSetting extends React.Component {
             visible: false
         }
     };
+
+
     uploadImage = (img) => {
+        this.setState({
+            loader: true
+        })
         return fetch(FB_FUNCTION_URL + 'storeImage', {
             method: 'POST',
             body: JSON.stringify({
@@ -75,6 +82,7 @@ class UserSetting extends React.Component {
                         ...this.state.user,
                         userpic: { uri: imageRes.imageUrl },
                     },
+                    loader: false
                 });
 
             })
@@ -202,7 +210,9 @@ class UserSetting extends React.Component {
     }
 
     updateUser(image) {
-
+        this.setState({
+            loader: true
+        })
         return fetch(API_URL + 'user/' + this.state.user.userid, {
             method: 'PUT',
             headers: {
@@ -223,7 +233,18 @@ class UserSetting extends React.Component {
                 return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(this.state.user))
 
             })
-            .then(() => alert("Success"))
+            .then(() =>
+                this.setState({
+                    loader: false
+                }
+                ,() => {
+                    if(!image){
+                       alert("Successful") 
+                    }
+                    
+                }
+            )
+            )
             .catch((error) => {
                 console.error(error);
                 alert("Not Success")
@@ -233,6 +254,9 @@ class UserSetting extends React.Component {
 
 
     getCategories() {
+        this.setState({
+            loader: true
+        })
         return new Promise((resolve, reject) => {
             return fetch(API_URL + 'category')
                 .then((response) => response.json())
@@ -281,8 +305,12 @@ class UserSetting extends React.Component {
                 .then(() => {
                     console.log("fixbug getUserByID then 2")
                     //   this.getAllEventActive();
-
-                    resolve();
+                    this.setState({
+                        loader: false
+                    }, () => {
+                        resolve();
+                    })
+                    // resolve();
                 })
                 .catch((error) => {
                     console.log("fixbug getUserByID catch", error)
@@ -298,7 +326,7 @@ class UserSetting extends React.Component {
             this.setState({
                 user: {
                     ...this.state.user,
-                    userpic: kaimook, //TODO remove ******************************************************      
+                    // userpic: kaimook, //TODO remove ******************************************************      
                     categoryid: this.state.user.categoryid.filter((id) => id !== cid)
                 }
             })
@@ -307,8 +335,8 @@ class UserSetting extends React.Component {
             this.setState({
                 user: {
                     ...this.state.user,
-                    userpic: kaimook //TODO remove ******************************************************
-                    ,
+                    // userpic: kaimook //TODO remove ******************************************************
+                    // ,
                     categoryid: [...this.state.user.categoryid, cid]
                 }
             })
@@ -323,120 +351,128 @@ class UserSetting extends React.Component {
             return (
                 <View style={{ flex: 1 }}>
 
-                    <HeaderBack
-                        header={"Setting"}
-                        navigator={this.props.navigation}
-                    />
+                    {
+                        (this.state.loader)
+                            ? (
+                                <View style={{ flex: 1 }}>
 
-                    {/* <HeaderText 
-                        header={"Setting"}
-                    /> */}
+                                    <HeaderBack
+                                        header={"Setting"}
+                                        navigator={this.props.navigation}
+                                    />
+                                    <BallIndicator color='grey' size={40} count={8} />
+                                </View>
+                            )
+                            : (
+                                <View style={{ flex: 1 }}>
 
-                    {/* <HeaderMain
-                        navigate={this.props.navigation.navigate}
-                    /> */}
+                                    <HeaderBack
+                                        header={"Setting"}
+                                        navigator={this.props.navigation}
+                                    />
+
+                                    <View style={{ width: '100%', height: '30%', flexDirection: 'column' }}>
+                                        <Image source={this.state.user.userpic} style={{ width: '100%', height: '100%' }} />
+                                        <View style={{ opacity: 0.7, backgroundColor: 'white', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+                                        <View style={{ opacity: 0.4, backgroundColor: 'black', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+                                        <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }}>
+                                            {/* <Text style={styles.desStyle}> </Text> */}
+                                            <TouchableOpacity onPress={() => { this.chooseImage() }}>
+
+                                                <Image source={this.state.user.userpic} style={styles.imgStyle} />
+                                                <Icon
+                                                    raised
+                                                    // reverse
+                                                    name={'edit'}
+                                                    type={'font-awesome'}
+                                                    color={'grey'}
+                                                    size={15}
+                                                    containerStyle={{ position: 'absolute', left: 140, top: 155, zIndex: 40 }} />
+
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+
+                                    <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
 
 
-                    <View style={{ width: '100%', height: '30%', flexDirection: 'column' }}>
-                        <Image source={this.state.user.userpic} style={{ width: '100%', height: '100%' }} />
-                        <View style={{ opacity: 0.7, backgroundColor: 'white', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
-                        <View style={{ opacity: 0.4, backgroundColor: 'black', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
-                        <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }}>
-                            {/* <Text style={styles.desStyle}> </Text> */}
-                            <TouchableOpacity onPress={() => { this.chooseImage() }}>
-
-                                <Image source={this.state.user.userpic} style={styles.imgStyle} />
-                                <Icon
-                                    raised
-                                    // reverse
-                                    name={'edit'}
-                                    type={'font-awesome'}
-                                    color={'grey'}
-                                    size={15}
-                                    containerStyle={{ position: 'absolute', left: 140, top: 155, zIndex: 40 }} />
-
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-                    <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
-
-
-                        <View style={{ padding: 20 }}>
-                            {/* <View style={styles.viewChooseImg}>
+                                        <View style={{ padding: 20 }}>
+                                            {/* <View style={styles.viewChooseImg}>
                                 <TouchableOpacity onPress={() => { this.chooseImage() }}>
                                     <Image source={this.state.user.userpic} style={styles.imgStyle} />
                                 </TouchableOpacity>
                             </View> */}
-                            <View style={{}}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View style={{ alignItems: 'flex-start' }}>
-                                        <Text style={styles.desStyle}>ID : {this.state.user.userid} </Text>
-                                        <Text style={styles.desStyle}>Firstname : {this.state.user.firstname}</Text>
-                                        <Text style={styles.desStyle}>Lastname : {this.state.user.lastname} </Text>
-                                    </View>
+                                            <View style={{}}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{ alignItems: 'flex-start' }}>
+                                                        <Text style={styles.desStyle}>ID : {this.state.user.userid} </Text>
+                                                        <Text style={styles.desStyle}>Firstname : {this.state.user.firstname}</Text>
+                                                        <Text style={styles.desStyle}>Lastname : {this.state.user.lastname} </Text>
+                                                    </View>
 
-                                </View>
-                                <Divider />
-                                <Text style={styles.desStyle}>Category :   </Text>
+                                                </View>
+                                                <Divider />
+                                                <Text style={styles.desStyle}>Category :   </Text>
 
-                                {this.state.category
-                                    .map((c) => {
+                                                {this.state.category
+                                                    .map((c) => {
 
-                                        return (
-                                            <View style={{ flexDirection: 'row' }}>
-                                                <CheckBox
-                                                    value={(this.state.user.categoryid.find((id) => c.id === id)) ? true : false}
-                                                    onValueChange={() => this.checkValue(c.id)}
+                                                        return (
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <CheckBox
+                                                                    value={(this.state.user.categoryid.find((id) => c.id === id)) ? true : false}
+                                                                    onValueChange={() => this.checkValue(c.id)}
 
-                                                />
-                                                <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
+                                                                />
+                                                                <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
+                                                            </View>
+                                                        )
+                                                    })}
                                             </View>
-                                        )
-                                    })}
-                            </View>
 
 
-                            <Button
-                                large
-                                icon={{ name: 'edit-2', type: 'feather' }}
-                                title='Edit profile'
-                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#8B0000' }}
+                                            <Button
+                                                large
+                                                icon={{ name: 'edit-2', type: 'feather' }}
+                                                title='Edit profile'
+                                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#8B0000' }}
 
-                                onPress={async () => {
-                                    this.updateUser()
-                                    // const url = await this.uploadImage(this.state.user.userpic)
-                                    alert(url);
-                                }}
+                                                onPress={async () => {
+                                                    this.updateUser()
+                                                    // const url = await this.uploadImage(this.state.user.userpic)
+                                                    alert(url);
+                                                }}
 
-                            />
-                            <Divider />
-                            <Button
-                                large
-                                icon={{ name: 'logout', type: 'material-community' }}
-                                title='Log Out'
-                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#4B0082' }}
+                                            />
+                                            <Divider />
+                                            <Button
+                                                large
+                                                icon={{ name: 'logout', type: 'material-community' }}
+                                                title='Log Out'
+                                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#4B0082' }}
 
-                                onPress={() => {
-                                    AsyncStorage.setItem('CURRENT_USER', "").then(() => {
+                                                onPress={() => {
+                                                    AsyncStorage.setItem('CURRENT_USER', "").then(() => {
 
-                                        // this.props.navigation.navigate('Login')
+                                                        // this.props.navigation.navigate('Login')
 
-                                        // TODO
-                                        // this.props.navigator.push({
-                                        //   screen: 'Login'
-                                        // });
-                                        this.props.navigation.replace({
-                                            screen: 'Login',
-                                        });
+                                                        // TODO
+                                                        // this.props.navigator.push({
+                                                        //   screen: 'Login'
+                                                        // });
+                                                        this.props.navigation.replace({
+                                                            screen: 'Login',
+                                                        });
 
-                                    });
-                                }}
-                            />
+                                                    });
+                                                }}
+                                            />
 
-                        </View>
-                    </ScrollView >
-
+                                        </View>
+                                    </ScrollView >
+                                </View>
+                            )
+                    }
                 </View>
 
             )

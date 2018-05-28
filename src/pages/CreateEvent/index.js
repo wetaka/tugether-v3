@@ -8,12 +8,12 @@ import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
 import ProfileIcon from '../../Images/profileicon.png';
 import FindIcon from '../../Images/findicon.png';
-import { API_URL } from "../../config/api";
+import { API_URL, FB_FUNCTION_URL } from "../../config/api";
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider, Icon } from 'react-native-elements';
 import moment from 'moment'
 import HeaderBack from "../../components/HeaderBack";
-
+import { BallIndicator } from 'react-native-indicators';
 
 
 const { width, height } = Dimensions.get('window');
@@ -27,6 +27,7 @@ const options = {
         skipBackup: true,
         path: 'images'
     }
+
 
 };
 
@@ -57,7 +58,9 @@ class CreateEvent extends React.Component {
             userid: "",
             firstname: "",
             lastname: ""
-        }
+        },
+        loader: false,
+        id: null
 
     }
 
@@ -122,7 +125,7 @@ class CreateEvent extends React.Component {
     }
 
 
-    
+
     setStartDate = async () => {
         try {
             alert("Start Date")
@@ -141,8 +144,8 @@ class CreateEvent extends React.Component {
                 const date_now = new Date()
                 let a = moment([year, month, day]);
                 let b = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
-                console.log("Moment",a.diff(b ,'days'))
-                if (a.diff(b ,'days') >= 1) {
+                console.log("Moment", a.diff(b, 'days'))
+                if (a.diff(b, 'days') >= 1) {
                     this.setState({
                         event: {
                             ...this.state.event,
@@ -184,7 +187,7 @@ class CreateEvent extends React.Component {
                 let a = moment([year, month, day]);
                 let b = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
 
-                console.log("Moment End date",a.diff(b, 'days'))
+                console.log("Moment End date", a.diff(b, 'days'))
                 if (a.diff(b, 'days') >= 0) {
                     this.setState({
                         event: {
@@ -246,6 +249,61 @@ class CreateEvent extends React.Component {
 
     }
 
+    uploadImage = () => {
+
+        if (this.state.event.posterpic === posterFrame) {
+            alert("Please insert poster")
+            return;
+        }
+        this.setState({
+            loader: true
+        })
+        return fetch(FB_FUNCTION_URL + 'storeImage', {
+            method: 'POST',
+            body: JSON.stringify({
+                image: this.state.event.posterpic.data,
+            })
+        })
+            .then(res => res.json())
+            .then(async (imageRes) => {
+                console.log('Success pic', imageRes)
+
+
+                // await AsyncStorage.setItem('CURRENT_USER', JSON.stringify(
+                //     {
+                //         ...this.state.user,
+                //         userpic: imageRes.imageUrl
+                //     })
+                // )
+
+                // await this.setState({
+                //     user: {
+                //         ...this.state.event,
+                //         posterpic: { uri: imageRes.imageUrl },
+                //     },
+                // });
+
+                await this.saveEvent(imageRes.imageUrl)
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Successful")
+                }
+                )
+
+            })
+            .then(() => {
+                this.props.navigation.navigate('Description', {
+                    eventid: this.state.id,
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("Not Succes !!!!!!!!!!!!!")
+            })
+    }
+
+
     chooseImage() {
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
@@ -260,10 +318,10 @@ class CreateEvent extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             }
             else {
-                // let source = { uri: response.uri };
-                let source = { uri: 'data:image/jpeg;base64,' + response.data  };
-                
-                
+                let source = {
+                    uri: response.uri, // present in <Image />
+                    data: response.data
+                };
                 console.log(source);
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
@@ -271,12 +329,16 @@ class CreateEvent extends React.Component {
                 this.setState({
                     event: {
                         ...this.state.event,
-                        posterpic: source
+                        posterpic: source //TODO remove ******************************************************
+                        // avatarSource: source
                     }
-                    // posterpic: source
                 });
+                // , () => {
+                // this.uploadImage(response.data);
+                // });
+                // }
             }
-        });
+        })
     }
 
     checkValue(cid) {
@@ -313,7 +375,7 @@ class CreateEvent extends React.Component {
     }
 
     validateNull(text) {
-        console.log("Trim ???? ",text)
+        console.log("Trim ???? ", text)
         if (text === null || text === undefined || text.trim() === "") {
             return false
         }
@@ -323,8 +385,8 @@ class CreateEvent extends React.Component {
     }
 
     validateNotZero(text) {
-        
-        if (typeof text=== 'number' && text <= 0) {
+
+        if (typeof text === 'number' && text <= 0) {
             return false
         }
         else {
@@ -369,7 +431,7 @@ class CreateEvent extends React.Component {
         }
     }
 
-    saveEvent() {
+    saveEvent(image) {
         if (!this.validateNull(this.state.event.topic)) {
             alert("Please enter Topic")
             return;
@@ -394,7 +456,7 @@ class CreateEvent extends React.Component {
             alert("Cannot have white spaces!")
             return;
         }
-        if(this.state.event.categoryid === []){
+        if (this.state.event.categoryid === []) {
             alert("Category is null")
             return;
         }
@@ -403,7 +465,7 @@ class CreateEvent extends React.Component {
         let c = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
         let d = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
 
-        if (c.diff(d ,'days') <= 0) {
+        if (c.diff(d, 'days') <= 0) {
             alert("Start Date cannot less than Today")
             return;
         } // 1
@@ -411,7 +473,7 @@ class CreateEvent extends React.Component {
         let e = moment([this.state.event.eventenddate.getFullYear(), this.state.event.eventenddate.getMonth(), this.state.event.eventenddate.getDate()]);
         let f = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
 
-        if (e.diff(f ,'days') < 0) {
+        if (e.diff(f, 'days') < 0) {
             alert("End Date cannot less than Start Date")
             return;
         } // 1
@@ -441,13 +503,20 @@ class CreateEvent extends React.Component {
                 eventenddate: this.state.event.eventenddate,
                 limited: this.state.event.limited,
                 categoryid: this.state.event.categoryid,
-                posterpic: this.state.event.posterpic.uri
+                posterpic: (image) ? image : this.state.event.posterpic.uri
 
             }),
         })
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log('vinaja', responseJson)
+                this.setState({
+                    
+                        id: responseJson.id
+                    
+
+                }
+                )
             })
             .catch((error) => {
                 console.error(error);
@@ -457,238 +526,255 @@ class CreateEvent extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <HeaderBack 
-                        header={"Create Event"}
-                        navigator={this.props.navigation}
-                    />
-                
-                <ScrollView style={styles.scrollStyle}>
-                    <View style={{ padding: 20 }}>
-                        <View style={styles.viewChooseImg}>
-                            <TouchableOpacity onPress={() => { this.chooseImage() }}>
-                                <Image
-                                    source={this.state.event.posterpic}
-                                    style={styles.imgStyle}
+
+                {
+                    (this.state.loader)
+                        ? (
+                            <View style={{ flex: 1 }}>
+                                <HeaderBack
+                                    header={"Create Event"}
+                                    navigator={this.props.navigation}
                                 />
-                            </TouchableOpacity>
-                        </View>
-                        {/* <View style={{ flexDirection: 'row' }}> */}
-
-                        <View style={{}}>
-                            <TextField
-                                autoFocus= {true}                                
-                                label='Topic'
-                                value={this.state.event.topic}
-                                onChangeText={text => {
-                                    this.setState({
-                                        event: {
-                                            ...this.state.event,
-                                            topic: text
-                                        }
-                                    })
-                                }
-                                }
-                            />
-
-
-                            <TouchableOpacity
-
-                                onPress={() => {
-                                    this.setStartDate()
-                                }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View style={{ flex: 1 }}>
-                                        <TextField
-                                            label='Start Event Date'
-                                            editable={false}
-                                            value={this.setFormatDate(this.state.event.eventstdate.getDate(), this.state.event.eventstdate.getMonth() + 1, this.state.event.eventstdate.getFullYear())}
-
-                                        />
-                                    </View>
-                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
-                                        />
-                                    </View>
-
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-
-                                onPress={() => {
-
-                                    this.setEndDate()
-                                }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View style={{ flex: 1 }}>
-                                        <TextField
-                                            label='End Event Date'
-                                            editable={false}
-                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(), this.state.event.eventenddate.getMonth() + 1, this.state.event.eventenddate.getFullYear())}
-                                        />
-                                    </View>
-                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
-                                        />
-                                    </View>
-
-                                </View>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-
-                                onPress={() => {
-
-                                    this.setTime()
-                                }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View style={{ flex: 1 }}>
-                                        <TextField
-                                            label='Start Event Time'
-                                            // disabled={true}
-                                            editable={false}
-                                            value={this.setFormatTime(this.state.event.eventstdate.getHours(), this.state.event.eventstdate.getMinutes())}
-
-                                        />
-                                    </View>
-                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                        <Icon name='access-time' type='material-icons' size={50} color='#6d616f'
-                                        />
-                                    </View>
-
-                                </View>
-                            </TouchableOpacity>
-
-                            <TextField
-                                label='Location'
-                                value={this.state.event.location}
-                                onChangeText={text => {
-                                    this.setState({
-                                        event: {
-                                            ...this.state.event,
-                                            location: text
-                                        }
-                                    })
-                                }}
-                            />
-
-                            <TextField
-                                label='Limited'
-                                keyboardType="numeric"
-                                
-                                value={this.state.event.limited}
-                                onChangeText={text => {
-                                    this.setState({
-                                        event: {
-                                            ...this.state.event,
-                                            limited: text
-                                        }
-                                    })
-                                }}
-                            />
-                            <TextField
-                                label='Facebook'
-                                value={this.state.event.facebook}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        facebook: text
-                                    }
-                                })}
-                            />
-
-                            <TextField
-                                label='Line'
-                                value={this.state.event.line}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        line: text
-                                    }
-                                })}
-                            />
-                            <TextField
-                                label='Website'
-                                value={this.state.event.website}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        website: text
-                                    }
-                                })}
-                            />
-
-                            <TextField
-                                label='Phone number'
-                                keyboardType="numeric"
-                                
-                                value={this.state.event.phone}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        phone: text
-                                    }
-                                })}
-                            />
-
-                            <TextField
-                                label='#Hashtag'
-                                value={this.state.event.hashtag}
-                                onChangeText={text => {
-                                    // if()
-                                    this.setState({
-                                        event: {
-                                            ...this.state.event,
-                                            hashtag: text
-                                        }
-                                    })
-                                }}
-                            />
-
-
-                            <TextField
-                                label='Description'
-                                value={this.state.event.description}
-                                onChangeText={text => this.setState({
-                                    event: {
-                                        ...this.state.event,
-                                        description: text
-                                    }
-                                })}
-                            />
-
-
-                            <Text style={styles.desStyle}>Category :   </Text>
-
-                            {this.state.category
-                                .map((c) => {
-
-                                    return (
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <CheckBox
-                                                value={(this.state.event.categoryid.find((id) => c.id === id)) ? true : false}
-                                                onValueChange={() => this.checkValue(c.id)}
-
-                                            />
-                                            <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
-                                        </View>
-                                    )
-                                })}
-
-                            <View style={{ paddingVertical: 10 }}>
-                                <TouchableOpacity
-                                    style={styles.setBtnStyle}
-                                    onPress={() => { this.saveEvent() }}
-                                >
-                                    <Text style={styles.setTextStyle}>
-                                        SAVE
-                                            </Text>
-                                </TouchableOpacity>
+                                <BallIndicator color='grey' size={40} count={8} />
                             </View>
+                        )
+                        : (
+                            <View style={{ flex: 1 }}>
+                                <HeaderBack
+                                    header={"Create Event"}
+                                    navigator={this.props.navigation}
+                                />
+                                <ScrollView style={styles.scrollStyle}>
+                                    <View style={{ padding: 20 }}>
+                                        <View style={styles.viewChooseImg}>
+                                            <TouchableOpacity onPress={() => { this.chooseImage() }}>
+                                                <Image
+                                                    source={this.state.event.posterpic}
+                                                    style={styles.imgStyle}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                        {/* <View style={{ flexDirection: 'row' }}> */}
 
-                        </View>
-                    </View>
-                </ScrollView>
+                                        <View style={{}}>
+                                            <TextField
+                                                autoFocus={true}
+                                                label='Topic'
+                                                value={this.state.event.topic}
+                                                onChangeText={text => {
+                                                    this.setState({
+                                                        event: {
+                                                            ...this.state.event,
+                                                            topic: text
+                                                        }
+                                                    })
+                                                }
+                                                }
+                                            />
+
+
+                                            <TouchableOpacity
+
+                                                onPress={() => {
+                                                    this.setStartDate()
+                                                }}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <TextField
+                                                            label='Start Event Date'
+                                                            editable={false}
+                                                            value={this.setFormatDate(this.state.event.eventstdate.getDate(), this.state.event.eventstdate.getMonth() + 1, this.state.event.eventstdate.getFullYear())}
+
+                                                        />
+                                                    </View>
+                                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
+                                                        />
+                                                    </View>
+
+                                                </View>
+                                            </TouchableOpacity>
+
+                                            <TouchableOpacity
+
+                                                onPress={() => {
+
+                                                    this.setEndDate()
+                                                }}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <TextField
+                                                            label='End Event Date'
+                                                            editable={false}
+                                                            value={this.setFormatDate(this.state.event.eventenddate.getDate(), this.state.event.eventenddate.getMonth() + 1, this.state.event.eventenddate.getFullYear())}
+                                                        />
+                                                    </View>
+                                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
+                                                        />
+                                                    </View>
+
+                                                </View>
+                                            </TouchableOpacity>
+
+                                            <TouchableOpacity
+
+                                                onPress={() => {
+
+                                                    this.setTime()
+                                                }}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <TextField
+                                                            label='Start Event Time'
+                                                            // disabled={true}
+                                                            editable={false}
+                                                            value={this.setFormatTime(this.state.event.eventstdate.getHours(), this.state.event.eventstdate.getMinutes())}
+
+                                                        />
+                                                    </View>
+                                                    <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
+                                                        <Icon name='access-time' type='material-icons' size={50} color='#6d616f'
+                                                        />
+                                                    </View>
+
+                                                </View>
+                                            </TouchableOpacity>
+
+                                            <TextField
+                                                label='Location'
+                                                value={this.state.event.location}
+                                                onChangeText={text => {
+                                                    this.setState({
+                                                        event: {
+                                                            ...this.state.event,
+                                                            location: text
+                                                        }
+                                                    })
+                                                }}
+                                            />
+
+                                            <TextField
+                                                label='Limited'
+                                                keyboardType="numeric"
+
+                                                value={this.state.event.limited}
+                                                onChangeText={text => {
+                                                    this.setState({
+                                                        event: {
+                                                            ...this.state.event,
+                                                            limited: text
+                                                        }
+                                                    })
+                                                }}
+                                            />
+                                            <TextField
+                                                label='Facebook'
+                                                value={this.state.event.facebook}
+                                                onChangeText={text => this.setState({
+                                                    event: {
+                                                        ...this.state.event,
+                                                        facebook: text
+                                                    }
+                                                })}
+                                            />
+
+                                            <TextField
+                                                label='Line'
+                                                value={this.state.event.line}
+                                                onChangeText={text => this.setState({
+                                                    event: {
+                                                        ...this.state.event,
+                                                        line: text
+                                                    }
+                                                })}
+                                            />
+                                            <TextField
+                                                label='Website'
+                                                value={this.state.event.website}
+                                                onChangeText={text => this.setState({
+                                                    event: {
+                                                        ...this.state.event,
+                                                        website: text
+                                                    }
+                                                })}
+                                            />
+
+                                            <TextField
+                                                label='Phone number'
+                                                keyboardType="numeric"
+
+                                                value={this.state.event.phone}
+                                                onChangeText={text => this.setState({
+                                                    event: {
+                                                        ...this.state.event,
+                                                        phone: text
+                                                    }
+                                                })}
+                                            />
+
+                                            <TextField
+                                                label='#Hashtag'
+                                                value={this.state.event.hashtag}
+                                                onChangeText={text => {
+                                                    // if()
+                                                    this.setState({
+                                                        event: {
+                                                            ...this.state.event,
+                                                            hashtag: text
+                                                        }
+                                                    })
+                                                }}
+                                            />
+
+
+                                            <TextField
+                                                label='Description'
+                                                value={this.state.event.description}
+                                                onChangeText={text => this.setState({
+                                                    event: {
+                                                        ...this.state.event,
+                                                        description: text
+                                                    }
+                                                })}
+                                            />
+
+
+                                            <Text style={styles.desStyle}>Category :   </Text>
+
+                                            {this.state.category
+                                                .map((c) => {
+
+                                                    return (
+                                                        <View style={{ flexDirection: 'row' }}>
+                                                            <CheckBox
+                                                                value={(this.state.event.categoryid.find((id) => c.id === id)) ? true : false}
+                                                                onValueChange={() => this.checkValue(c.id)}
+
+                                                            />
+                                                            <Text style={{ marginTop: 5 }}> {c.categoryname} </Text>
+                                                        </View>
+                                                    )
+                                                })}
+
+                                            <View style={{ paddingVertical: 10 }}>
+                                                <TouchableOpacity
+                                                    style={styles.setBtnStyle}
+                                                    onPress={() => { this.uploadImage() }}
+                                                >
+                                                    <Text style={styles.setTextStyle}>
+                                                        SAVE
+                                            </Text>
+                                                </TouchableOpacity>
+                                            </View>
+
+                                        </View>
+                                    </View>
+                                </ScrollView>
+                            </View>
+                        )
+                }
+
             </View >
         )
     }

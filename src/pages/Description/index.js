@@ -71,6 +71,7 @@ class Description extends React.Component {
         return new Promise((resolve, reject) => {
             // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
             // fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
+            console.log("Desc null jing mai ?", this.props.navigation.state.params.eventid)
             return fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
                 .then((response) => response.json())
                 .then((data) => {
@@ -91,7 +92,7 @@ class Description extends React.Component {
                             hashtag: "" + data.hashtag,
                             bcapprove: "" + data.bcapprove,
                             // posterpic: { uri: data.posterpic },
-                            posterpic: "555555555"+ data.posterpic ,                         
+                            posterpic: "555555555" + data.posterpic,
                             createdate: "" + data.createdate,
                             updatedate: "" + data.updatedate,
                             eventstdate: new Date(data.eventstdate),
@@ -103,7 +104,7 @@ class Description extends React.Component {
 
                     }, () => {
                         this.checkjoin()
-                        resolve(); 
+                        resolve();
                     }
                     );
                     //console.log(this.props.eventid)
@@ -170,14 +171,14 @@ class Description extends React.Component {
                 console.log('Now who join ', this.state.event.join)
 
                 this.setState({
-                    event : {
+                    event: {
                         ...this.state.event,
-                        join : [...this.state.event.join, this.state.user.userid]
+                        join: [...this.state.event.join, this.state.user.userid]
                     }
-                },() => {
+                }, () => {
                     this.checkjoin()
                 }
-            )               
+                )
             })
             .catch((error) => {
                 console.error(error);
@@ -194,7 +195,7 @@ class Description extends React.Component {
                     let newjoin = this.state.event.join.filter(uid => uid !== this.state.user.userid)
                     // console.log("New Join", newjoin)
                     console.log("New Join", newjoin)
-                    console.log("Event before save" , this.state.event)
+                    console.log("Event before save", this.state.event)
                     fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
                         method: 'PUT',
                         headers: {
@@ -214,14 +215,14 @@ class Description extends React.Component {
                         .then((responseJson) => {
                             console.log('vinaja', responseJson)
                             this.setState({
-                                event : {
+                                event: {
                                     ...this.state.event,
-                                    join : newjoin
+                                    join: newjoin
                                 }
-                            },() => {
+                            }, () => {
                                 this.checkjoin()
                             }
-                        )                         
+                            )
 
                         })
                         .catch((error) => {
@@ -284,11 +285,34 @@ class Description extends React.Component {
             });
     }
 
-    componentWillMount() {
-        this.getCurrentUser();
-        this.getEvent();
-        this.getAllComment();
+    // if (this.isFromLoginPage()) {
+    //     console.log("if jaaaaaaaaaaaaaaaaaaaaaa")
+    //     this.getUserByID();
+    //     const userid = this.props.navigation.getParam('userid', '');      
 
+    //     console.log("fixbug ComponentWillMount if", userid)
+    //   }
+    //   else {
+    //     console.log("else jaaaaaaaaaaaaaaaaaaaaaaaa")
+    //     this.getCurrentUser();
+    //     console.log("fixbug ComponentWillMount else")
+    //   }
+
+    componentWillMount() {
+        if (this.props.navigation.state.params.eventid) {
+            this.getCurrentUser();
+            this.getEvent();
+            this.getAllComment();
+        }
+
+    }
+
+    componentWillReceiveProps(){
+        if (this.props.navigation.state.params.eventid) {
+            this.getCurrentUser();
+            this.getEvent();
+            this.getAllComment();
+        }
     }
 
     getAllComment() {
@@ -321,26 +345,26 @@ class Description extends React.Component {
     }
 
 
-    // renderPost(item) {
-    //     console.log(item)
-    //     const dayitem = new Date(item.createdate)
+    renderPost(item) {
+        console.log(item)
+        const dayitem = new Date(item.createdate)
 
-    //     return (
+        return (
 
-    //         <View style={{ borderWidth: 2, borderColor: '#e1dbdb', width: '100%', paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}>
+            <View style={{ borderWidth: 2, borderColor: '#e1dbdb', width: '100%', paddingLeft: 20, paddingTop: 10, paddingBottom: 10 }}>
 
-    //             <View style={styles.desStyle}>
-    //                 <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.createby}    </Text>
-    //                 <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
-    //             </View>
-    //             <Text style={{ fontSize: 15 }}>{item.details}</Text>
+                <View style={styles.desStyle}>
+                    <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.createby}    </Text>
+                    <Text style={{ fontSize: 15 }}>{dayitem.getDate()}/{dayitem.getMonth()}/{dayitem.getFullYear()} {dayitem.getHours()}:{dayitem.getMinutes()}:{dayitem.getMilliseconds()}</Text>
+                </View>
+                <Text style={{ fontSize: 15 }}>{item.details}</Text>
 
-    //             {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
+                {/* <Text style={{ fontSize: 20 }}>__________________________________</Text> */}
 
 
-    //         </View>
-    //     )
-    // }
+            </View>
+        )
+    }
 
     checkjoin() {
         if (this.state.event.join.find((id) => this.state.user.userid === id)) {
@@ -412,7 +436,7 @@ class Description extends React.Component {
                                             style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
                                             onPress={() => {
                                                 // Actions.CreateEvent();
-                                                this.props.navigation.navigate('UpdateEvent' ,{
+                                                this.props.navigation.navigate('UpdateEvent', {
                                                     eventid: this.props.navigation.state.params.eventid,
                                                 })
                                             }}
@@ -433,7 +457,7 @@ class Description extends React.Component {
                                             style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
                                             onPress={() => {
                                                 // this.props.navigate('UserSetting')
-                                                this.props.navigation.navigate('Joined' ,{
+                                                this.props.navigation.navigate('Joined', {
                                                     eventid: this.props.navigation.state.params.eventid,
                                                 })
                                             }}
