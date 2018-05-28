@@ -299,6 +299,8 @@ class Description extends React.Component {
     //   }
 
     componentWillMount() {
+        console.log("This props from componentWillMount ",this.props)
+        
         if (this.props.navigation.state.params.eventid) {
             this.getCurrentUser();
             this.getEvent();
@@ -307,7 +309,19 @@ class Description extends React.Component {
 
     }
 
-    componentWillReceiveProps(){
+    // componentWillReceiveProps(nextProps){
+    //     console.log("This props ",this.props)
+    //     console.log("Next props ",nextProps)
+    //     if (this.props.navigation.state.params.eventid) {
+    //         this.getCurrentUser();
+    //         this.getEvent();
+    //         this.getAllComment();
+    //     }
+    // }
+
+    static getDeriveedStateFromProps(props, state){
+        console.log("This props ",this.props)
+        console.log("Next props ",props)
         if (this.props.navigation.state.params.eventid) {
             this.getCurrentUser();
             this.getEvent();

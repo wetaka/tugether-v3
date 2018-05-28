@@ -290,12 +290,15 @@ class CreateEvent extends React.Component {
                     alert("Successful")
                 }
                 )
+                console.log("Event id before change page but after saveEvent:", this.state.id)
+                
 
             })
             .then(() => {
-                this.props.navigation.navigate('Description', {
-                    eventid: this.state.id,
-                });
+                console.log("Event id before change page:", this.state.id)
+                // this.props.navigation.navigate('Description', {
+                //     eventid: 1,
+                // });
             })
             .catch((error) => {
                 console.error(error);
@@ -515,8 +518,13 @@ class CreateEvent extends React.Component {
                         id: responseJson.id
                     
 
+                },() => {
+                    console.log("responseJson after save event :", responseJson)
+                    console.log("Event id after save event :", this.state.id)
                 }
                 )
+               
+                
             })
             .catch((error) => {
                 console.error(error);
