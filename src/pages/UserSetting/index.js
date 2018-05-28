@@ -58,15 +58,30 @@ class UserSetting extends React.Component {
                 image: img,
             })
         })
-        .then(res => res.json())
-        .then((imageRes) => {
-            console.log('Success pic', imageRes)
-            alert("Succes")
-        })
-        .catch((error) => {
-            console.error(error);
-            alert("Not Succes !!!!!!!!!!!!!")
-        })
+            .then(res => res.json())
+            .then(async (imageRes) => {
+                console.log('Success pic', imageRes)
+
+                await this.updateUser(imageRes.imageUrl)
+                await AsyncStorage.setItem('CURRENT_USER', JSON.stringify(
+                    {
+                        ...this.state.user,
+                        userpic: imageRes.imageUrl
+                    })
+                )
+
+                await this.setState({
+                    user: {
+                        ...this.state.user,
+                        userpic: { uri: imageRes.imageUrl },
+                    },
+                });
+
+            })
+            .catch((error) => {
+                console.error(error);
+                alert("Not Succes !!!!!!!!!!!!!")
+            })
     }
 
 
@@ -173,20 +188,20 @@ class UserSetting extends React.Component {
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-                this.setState({
-                    user: {
-                        ...this.state.user,
-                        userpic: source //TODO remove ******************************************************
-                        // avatarSource: source
-                    }
-                }, () => {
-                    this.uploadImage('data:image/jpeg;base64,' + response.data);
-                });
+                // this.setState({
+                //     user: {
+                //         ...this.state.user,
+                //         userpic: source //TODO remove ******************************************************
+                //         // avatarSource: source
+                //     }
+                // }, () => {
+                this.uploadImage(response.data);
+                // });
             }
         });
     }
 
-    updateUser() {
+    updateUser(image) {
 
         return fetch(API_URL + 'user/' + this.state.user.userid, {
             method: 'PUT',
@@ -197,7 +212,7 @@ class UserSetting extends React.Component {
             body: JSON.stringify(
                 {
                     ...this.state.user,
-                    userpic: this.state.user.userpic.uri
+                    userpic: (image) ? image : this.state.user.userpic.uri
                 }),
         })
             .then((response) => response.json())
@@ -255,8 +270,8 @@ class UserSetting extends React.Component {
                     this.setState({
                         user: {
                             ...data,
-                            userpic: kaimook,
-                            // userpic: {uri: data.userpic} //TODO remove ******************************************************
+                            // userpic: kaimook,
+                            userpic: { uri: data.userpic } //TODO remove ******************************************************
                         }
                     })
 
@@ -323,26 +338,26 @@ class UserSetting extends React.Component {
 
 
                     <View style={{ width: '100%', height: '30%', flexDirection: 'column' }}>
-                            <Image source={this.state.user.userpic} style={{ width: '100%', height: '100%' }} />
-                            <View style={{ opacity: 0.7, backgroundColor: 'white', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
-                            <View style={{ opacity: 0.4, backgroundColor: 'black', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
-                            <View style={{alignItems:'center', justifyContent:'center' ,position: 'absolute' , bottom: 0, right: 0, left: 0, top: 0 } }>
-                                {/* <Text style={styles.desStyle}> </Text> */}
-                                <TouchableOpacity onPress={() => { this.chooseImage() }}>
+                        <Image source={this.state.user.userpic} style={{ width: '100%', height: '100%' }} />
+                        <View style={{ opacity: 0.7, backgroundColor: 'white', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+                        <View style={{ opacity: 0.4, backgroundColor: 'black', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }} />
+                        <View style={{ alignItems: 'center', justifyContent: 'center', position: 'absolute', bottom: 0, right: 0, left: 0, top: 0 }}>
+                            {/* <Text style={styles.desStyle}> </Text> */}
+                            <TouchableOpacity onPress={() => { this.chooseImage() }}>
 
-                                    <Image source={this.state.user.userpic} style={styles.imgStyle} />
-                                    <Icon
-                                        raised
-                                        // reverse
-                                        name={'edit'}
-                                        type={'font-awesome'}
-                                        color={'grey'}
-                                        size={15}
-                                        containerStyle={{ position: 'absolute', left: 140, top: 155, zIndex: 40 }} />
+                                <Image source={this.state.user.userpic} style={styles.imgStyle} />
+                                <Icon
+                                    raised
+                                    // reverse
+                                    name={'edit'}
+                                    type={'font-awesome'}
+                                    color={'grey'}
+                                    size={15}
+                                    containerStyle={{ position: 'absolute', left: 140, top: 155, zIndex: 40 }} />
 
-                                </TouchableOpacity>
-                            </View>
+                            </TouchableOpacity>
                         </View>
+                    </View>
 
                     <ScrollView style={{ flexDirection: 'column', backgroundColor: "white", flex: 1 }}>
 
