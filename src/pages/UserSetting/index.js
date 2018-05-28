@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, StyleSheet, CheckBox, AsyncStorage } from 'react-native';
 import kaimook from '../../Images/mook.jpg'
-import { API_URL } from "../../config/api";
+import { API_URL, FB_FUNCTION_URL } from "../../config/api";
 import { Button, Divider } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import firebase from '../../config/firebase';
@@ -51,39 +51,57 @@ class UserSetting extends React.Component {
             visible: false
         }
     };
-
-    uploadImage = (uri, mime = 'application/octet-stream') => {
-        // Prepare Blob support
-
-        const fs = RNFetchBlob.fs;
-        const XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
-        const Blob = RNFetchBlob.polyfill.Blob;
-        return new Promise((resolve, reject) => {
-            const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
-            const sessionId = new Date().getTime()
-            let uploadBlob = null
-            const imageRef = storage.ref('images').child(`${sessionId}`)
-
-            fs.readFile(uploadUri, 'base64')
-                .then((data) => {
-                    return Blob.build(data, { type: `${mime};BASE64` })
-                })
-                .then((blob) => {
-                    uploadBlob = blob
-                    return imageRef.put(blob, { contentType: mime })
-                })
-                .then(() => {
-                    uploadBlob.close()
-                    return imageRef.getDownloadURL()
-                })
-                .then((url) => {
-                    resolve(url)
-                })
-                .catch((error) => {
-                    reject(error)
-                })
+    uploadImage = (img) => {
+        return fetch(FB_FUNCTION_URL + 'storeImage', {
+            method: 'POST',
+            body: JSON.stringify({
+                image: img,
+            })
+        })
+        .then(res => res.json())
+        .then((imageRes) => {
+            console.log('Success pic', imageRes)
+            alert("Succes")
+        })
+        .catch((error) => {
+            console.error(error);
+            alert("Not Succes !!!!!!!!!!!!!")
         })
     }
+
+
+    // uploadImage = (uri, mime = 'application/octet-stream') => {
+    //     // Prepare Blob support
+
+    //     const fs = RNFetchBlob.fs;
+    //     const XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+    //     const Blob = RNFetchBlob.polyfill.Blob;
+    //     return new Promise((resolve, reject) => {
+    //         const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+    //         const sessionId = new Date().getTime()
+    //         let uploadBlob = null
+    //         const imageRef = storage.ref('images').child(`${sessionId}`)
+
+    //         fs.readFile(uploadUri, 'base64')
+    //             .then((data) => {
+    //                 return Blob.build(data, { type: `${mime};BASE64` })
+    //             })
+    //             .then((blob) => {
+    //                 uploadBlob = blob
+    //                 return imageRef.put(blob, { contentType: mime })
+    //             })
+    //             .then(() => {
+    //                 uploadBlob.close()
+    //                 return imageRef.getDownloadURL()
+    //             })
+    //             .then((url) => {
+    //                 resolve(url)
+    //             })
+    //             .catch((error) => {
+    //                 reject(error)
+    //             })
+    //     })
+    // }
 
 
     componentDidMount() {
@@ -148,7 +166,9 @@ class UserSetting extends React.Component {
                 console.log('User tapped custom button: ', response.customButton);
             }
             else {
-                let source = { uri: 'data:image/jpeg;base64,' + response.data };
+                let source = {
+                    uri: response.uri, // present in <Image />
+                };
                 console.log(source);
                 // You can also display the image using data:
                 // let source = { uri: 'data:image/jpeg;base64,' + response.data };
@@ -159,6 +179,8 @@ class UserSetting extends React.Component {
                         userpic: source //TODO remove ******************************************************
                         // avatarSource: source
                     }
+                }, () => {
+                    this.uploadImage('data:image/jpeg;base64,' + response.data);
                 });
             }
         });
@@ -288,7 +310,7 @@ class UserSetting extends React.Component {
 
                     <HeaderBack
                         header={"Setting"}
-                        navigator={this.props.navigator}
+                        navigator={this.props.navigation}
                     />
 
                     {/* <HeaderText 
@@ -367,8 +389,8 @@ class UserSetting extends React.Component {
                                 buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#8B0000' }}
 
                                 onPress={async () => {
-                                    // this.updateUser()
-                                    const url = await this.uploadImage(this.state.user.userpic)
+                                    this.updateUser()
+                                    // const url = await this.uploadImage(this.state.user.userpic)
                                     alert(url);
                                 }}
 

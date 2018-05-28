@@ -44,7 +44,7 @@ class Joined extends React.Component {
 
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-        fetch(API_URL + 'get-join/2')
+        fetch(API_URL + 'get-join/'+this.props.navigation.state.params.eventid)
             .then((response) => response.json())
             .then((data) => {
                 console.log('get userid', data)
@@ -72,14 +72,8 @@ class Joined extends React.Component {
             <View style={{ flex: 1 }}>
                 <HeaderBack
                     header={"Joined List"}
-                    navigator={this.props.navigator}
+                    navigator={this.props.navigation}
                 />
-
-                <View style={styles.searchView}>
-                    <SearchHeader />
-                </View>
-
-
 
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ padding: 20 }}>

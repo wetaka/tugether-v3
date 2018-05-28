@@ -15,6 +15,7 @@ import { Icon } from 'react-native-elements';
 
 export default class HeaderBack extends Component {
     render() {
+        console.log("Prop jaaaa ",this.props)
 
         return (
 
@@ -22,7 +23,7 @@ export default class HeaderBack extends Component {
                 <TouchableOpacity
 
                     onPress={() => {
-                        this.props.navigator.pop()
+                        this.props.navigator.goBack()
                     }}>
                     <View style={{ justifyContent: 'center' }}>
                         <Icon name='ios-arrow-back' type='ionicon' size={40} color='white'

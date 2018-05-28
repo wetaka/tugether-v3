@@ -48,7 +48,7 @@ class Description extends React.Component {
             posterpic: "",
             createdate: "",
             updatedate: "",
-            posterpic: "",
+            posterpic: "555555555",
             // startdate: "",
             // enddate: "",
             eventstdate: new Date(),
@@ -68,47 +68,52 @@ class Description extends React.Component {
     };
 
     getEvent() {
-        // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-        // fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
-        fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('get eventid Description :', data)
-                this.setState({
-                    event: {
-                        eventid: data.eventid,
-                        topic: "" + data.topic,
-                        createby: "" + data.createby,
-                        categoryid: [...data.categoryid],
-                        location: "" + data.location,
-                        approve: "" + data.approve,
-                        description: "" + data.description,
-                        facebook: "" + data.facebook,
-                        line: "" + data.line,
-                        web: "" + data.web,
-                        phone: "" + data.phone,
-                        hashtag: "" + data.hashtag,
-                        bcapprove: "" + data.bcapprove,
-                        posterpic: { uri: data.posterpic },
-                        createdate: "" + data.createdate,
-                        updatedate: "" + data.updatedate,
-                        eventstdate: new Date(data.eventstdate),
-                        eventenddate: "" + data.eventenddate,
-                        active: data.active,
-                        limited: data.limited,
-                        join: [...data.join]
-                    }
+        return new Promise((resolve, reject) => {
+            // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+            // fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
+            return fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('get eventid Description :', data)
+                    this.setState({
+                        event: {
+                            eventid: data.eventid,
+                            topic: "" + data.topic,
+                            createby: "" + data.createby,
+                            categoryid: [...data.categoryid],
+                            location: "" + data.location,
+                            approve: "" + data.approve,
+                            description: "" + data.description,
+                            facebook: "" + data.facebook,
+                            line: "" + data.line,
+                            web: "" + data.web,
+                            phone: "" + data.phone,
+                            hashtag: "" + data.hashtag,
+                            bcapprove: "" + data.bcapprove,
+                            // posterpic: { uri: data.posterpic },
+                            posterpic: "555555555"+ data.posterpic ,                         
+                            createdate: "" + data.createdate,
+                            updatedate: "" + data.updatedate,
+                            eventstdate: new Date(data.eventstdate),
+                            eventenddate: "" + data.eventenddate,
+                            active: data.active,
+                            limited: data.limited,
+                            join: [...data.join]
+                        }
 
-                }, () => {
-                    this.checkjoin()
-                }
-                );
-                //console.log(this.props.eventid)
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("Fail");
-            });
+                    }, () => {
+                        this.checkjoin()
+                        resolve(); 
+                    }
+                    );
+                    //console.log(this.props.eventid)
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("Fail");
+                    reject()
+                });
+        });
     }
 
     getCurrentUser() {
@@ -153,16 +158,26 @@ class Description extends React.Component {
                 ...this.state.event,
                 join: [...this.state.event.join, this.state.user.userid]
             }
-            // , () => {
+                // , () => {
 
-            //     this.checkjoin()
-            // }
+                //     this.checkjoin()
+                // }
             ),
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log('vinaja', responseJson)
+                console.log('Add join ======================', responseJson)
+                console.log('Now who join ', this.state.event.join)
 
+                this.setState({
+                    event : {
+                        ...this.state.event,
+                        join : [...this.state.event.join, this.state.user.userid]
+                    }
+                },() => {
+                    this.checkjoin()
+                }
+            )               
             })
             .catch((error) => {
                 console.error(error);
@@ -175,9 +190,11 @@ class Description extends React.Component {
             this.getEvent()
                 .then(() => {
                     // console.log("Delete Join")
-                    console.log("New Join", newjoin)
+                    // console.log("New Join", newjoin)
                     let newjoin = this.state.event.join.filter(uid => uid !== this.state.user.userid)
                     // console.log("New Join", newjoin)
+                    console.log("New Join", newjoin)
+                    console.log("Event before save" , this.state.event)
                     fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
                         method: 'PUT',
                         headers: {
@@ -188,14 +205,23 @@ class Description extends React.Component {
                             ...this.state.event,
                             join: newjoin
                         }
-                        // , () => {
-                        //     this.checkjoin()
-                        // }
+                            // , () => {
+                            //     this.checkjoin()
+                            // }
                         ),
                     })
                         .then((response) => response.json())
                         .then((responseJson) => {
                             console.log('vinaja', responseJson)
+                            this.setState({
+                                event : {
+                                    ...this.state.event,
+                                    join : newjoin
+                                }
+                            },() => {
+                                this.checkjoin()
+                            }
+                        )                         
 
                         })
                         .catch((error) => {
@@ -357,7 +383,7 @@ class Description extends React.Component {
 
                 <HeaderBack
                     header={"Description"}
-                    navigator={this.props.navigator}
+                    navigator={this.props.navigation}
                 />
 
 
@@ -368,7 +394,10 @@ class Description extends React.Component {
 
                             <TouchableOpacity
                                 style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
-                                onPress={() => { (this.state.event.joinbtn === "Join") ? this.addjoin() : this.deljoin() }}
+                                onPress={() => {
+                                    // console.log('Before press btn ',this.state.joinbtn)
+                                    (this.state.joinbtn === "Join") ? this.addjoin() : this.deljoin()
+                                }}
                             >
                                 <Text style={{ color: 'white', fontSize: 30 }}>
                                     {this.state.joinbtn}
@@ -376,43 +405,47 @@ class Description extends React.Component {
                             </TouchableOpacity>
 
 
-                            {/* {
-                            (this.state.event.createby === this.state.user.userid)
-                                ? (
-                                    <TouchableOpacity
-                                        style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
-                                        onPress={() => {
-                                            // Actions.CreateEvent();
-                                            this.props.navigate('CreateEvent')
-                                        }}
+                            {
+                                (this.state.event.createby === this.state.user.userid)
+                                    ? (
+                                        <TouchableOpacity
+                                            style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                            onPress={() => {
+                                                // Actions.CreateEvent();
+                                                this.props.navigation.navigate('UpdateEvent' ,{
+                                                    eventid: this.props.navigation.state.params.eventid,
+                                                })
+                                            }}
 
-                                    >
-                                        <Text style={{ color: 'white', fontSize: 30 }}>
-                                            Edit
+                                        >
+                                            <Text style={{ color: 'white', fontSize: 30 }}>
+                                                Edit
                                         </Text>
-                                    </TouchableOpacity>
-                                )
-                                : null
-                        }
+                                        </TouchableOpacity>
+                                    )
+                                    : null
+                            }
 
-                        {
-                            (this.state.event.createby === this.state.user.userid)
-                                ? (
-                                    <TouchableOpacity
-                                        style={{ width: '20%', height: '100%', alignItems: 'flex-end', justifyContent: 'flex-end' }}
-                                        onPress={() => {
-                                            this.props.navigate('UserSetting')
+                            {
+                                (this.state.event.createby === this.state.user.userid)
+                                    ? (
+                                        <TouchableOpacity
+                                            style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                            onPress={() => {
+                                                // this.props.navigate('UserSetting')
+                                                this.props.navigation.navigate('Joined' ,{
+                                                    eventid: this.props.navigation.state.params.eventid,
+                                                })
+                                            }}
 
-                                        }}
-
-                                    >
-                                        <Text style={{ color: 'white', fontSize: 30 }}>
-                                            All Join
+                                        >
+                                            <Text style={{ color: 'white', fontSize: 30 }}>
+                                                All Join
                                         </Text>
-                                    </TouchableOpacity>
-                                )
-                                : null
-                        } */}
+                                        </TouchableOpacity>
+                                    )
+                                    : null
+                            }
 
                         </View>
 

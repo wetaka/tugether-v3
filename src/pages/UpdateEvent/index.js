@@ -12,6 +12,7 @@ import { API_URL } from "../../config/api";
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider, Icon } from 'react-native-elements';
 import moment from 'moment';
+import HeaderBack from "../../components/HeaderBack";
 
 
 const { width, height } = Dimensions.get('window');
@@ -112,7 +113,7 @@ class UpdateEvent extends React.Component {
                     // this.props.navigator.push({
                     //     screen: 'Login'
                     //   });
-            
+
                 }
             })
             .catch(() => { console.log('eiei error') })
@@ -121,7 +122,7 @@ class UpdateEvent extends React.Component {
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
         // fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid)
-        fetch(API_URL + 'event/5')
+        fetch(API_URL + 'event/'+this.props.navigation.state.params.eventid)
             .then((response) => response.json())
             .then((data) => {
                 console.log('get eventid', data)
@@ -263,7 +264,7 @@ class UpdateEvent extends React.Component {
             return;
         } // 1
 
-        fetch(API_URL + 'event/5', {
+        fetch(API_URL + 'event/' +this.props.navigation.state.params.eventid, {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
@@ -491,24 +492,12 @@ class UpdateEvent extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Search
-                    ref="search_box"
-                    /**
-                     * There many props that can customizable
-                    * Please scroll down to Props section
- 
-                    */
-                    backgroundColor="orange"
 
+                <HeaderBack
 
+                    header={"Edit Event"}
+                    navigator={this.props.navigation}
                 />
-                <View style={styles.viewBtn}>
-
-                    <Image source={Buttonbar}
-                        style={styles.buttonBar}
-                    />
-
-                </View>
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ padding: 20 }}>
                         <View style={styles.viewChooseImg}>

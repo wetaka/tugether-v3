@@ -459,7 +459,7 @@ class CreateEvent extends React.Component {
             <View style={{ flex: 1 }}>
                 <HeaderBack 
                         header={"Create Event"}
-                        navigator={this.props.navigator}
+                        navigator={this.props.navigation}
                     />
                 
                 <ScrollView style={styles.scrollStyle}>
