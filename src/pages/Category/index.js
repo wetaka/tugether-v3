@@ -214,7 +214,7 @@ class Category extends React.Component {
                             <View style={{ paddingVertical: 10 }}>
                                 <TouchableOpacity
                                     style={{
-                                        backgroundColor: (c.isSelect) ? 'green' : 'red',
+                                        backgroundColor: (c.isSelect) ? '#E1B899' : '#E79E6D',
                                         padding: 15,
                                         borderRadius: 15,
                                         alignItems: "center"
@@ -289,10 +289,11 @@ class Category extends React.Component {
 
 const styles = StyleSheet.create({
     //flexDirection: 'column', backgroundColor: "white", flex: 1 
-    scrollStyle: { flexDirection: 'column', backgroundColor: "white", flex: 1 },
+    scrollStyle: { flexDirection: 'column', backgroundColor: '#FFDFC4', flex: 1 },
     buttonStyle: { backgroundColor: "#ae5945", padding: 15, borderRadius: 15, alignItems: "center" },
     categoryStyle: { color: "white", fontSize: 20 }
 })
+
 
 
 export default Category;

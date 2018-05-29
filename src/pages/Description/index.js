@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, FlatList, StyleSheet, AsyncStorage } from 'react-native';
+import { Alert, Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, FlatList, StyleSheet, AsyncStorage } from 'react-native';
 import poster from '../../Images/poster1.jpg'
 import facebook from '../../Images/facebook.png'
 import CustomInput from '../../components/CustomInput';
@@ -45,10 +45,10 @@ class Description extends React.Component {
             phone: "",
             hashtag: "",
             bcapprove: "",
-            posterpic: "",
+            posterpic: null,
             createdate: "",
             updatedate: "",
-            posterpic: "555555555",
+            // posterpic: "555555555",
             // startdate: "",
             // enddate: "",
             eventstdate: new Date(),
@@ -91,8 +91,8 @@ class Description extends React.Component {
                             phone: "" + data.phone,
                             hashtag: "" + data.hashtag,
                             bcapprove: "" + data.bcapprove,
-                            // posterpic: { uri: data.posterpic },
-                            posterpic: "555555555" + data.posterpic,
+                            posterpic: { uri: data.posterpic },
+                            // posterpic: data.posterpic,
                             createdate: "" + data.createdate,
                             updatedate: "" + data.updatedate,
                             eventstdate: new Date(data.eventstdate),
@@ -299,8 +299,8 @@ class Description extends React.Component {
     //   }
 
     componentWillMount() {
-        console.log("This props from componentWillMount ",this.props)
-        
+        console.log("This props from componentWillMount ", this.props)
+
         if (this.props.navigation.state.params.eventid) {
             this.getCurrentUser();
             this.getEvent();
@@ -319,9 +319,9 @@ class Description extends React.Component {
     //     }
     // }
 
-    static getDeriveedStateFromProps(props, state){
-        console.log("This props ",this.props)
-        console.log("Next props ",props)
+    static getDeriveedStateFromProps(props, state) {
+        console.log("This props ", this.props)
+        console.log("Next props ", props)
         if (this.props.navigation.state.params.eventid) {
             this.getCurrentUser();
             this.getEvent();
@@ -413,9 +413,46 @@ class Description extends React.Component {
         }
     }
 
+    // delE() {
+    //     fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
+    //         return fetch(url + '/' + item, {
+    //             method: 'delete'
+    //           }).then(response =>
+    //             response.json().then(json => {
+    //               return json;
+    //             })
+    //         })
+
+    // }
+
+    delE() {
+        return fetch(API_URL + 'event/' + this.props.navigation.state.params.eventid, {
+          method: 'delete'
+        }).then((response) =>response.json())
+          .then(json => {
+            // alert("Delete Succesful")
+            this.props.navigation.navigate.goBack()
+            // return json;
+          })
+    }
+
+    delYourEvent() {
+        Alert.alert(
+            'Delete Event',
+            'Are you sure you want to delete this event?',
+            [
+                // { text: 'Cancel', onPress: () => this.delE(), style: 'cancel' },
+                { text: 'Cancel', onPress: () => console.log('OK Pressed') , style: 'cancel' },
+                { text: 'OK', onPress: () => this.delE() },
+            ],
+            // { cancelable: false }
+        )
+    }
+
     render() {
 
         const { event } = this.state
+        console.log("this event : ", event)
         return (
             <View style={{ flex: 1 }}>
 
@@ -429,9 +466,35 @@ class Description extends React.Component {
                 <ScrollView style={styles.scrollStyle}>
                     <View style={{ flex: 1 }}>
                         <View>
+                            <View style={{ flex: 1, height: 300 }}>
+                                <Image
+                                    source={event.posterpic}
+                                    style={styles.posterStyle}
+                                />
+                            </View>
+
+                            {
+                                (this.state.event.createby === this.state.user.userid)
+                                    ? (
+                                        <TouchableOpacity
+                                            style={{ backgroundColor: "#d11800", padding: 2, borderRadius: 98, alignItems: 'center', marginTop: 9, marginLeft: 5, marginRight: 5 }}
+                                            onPress={() => {
+                                                // Actions.CreateEvent();
+                                                this.delYourEvent()
+
+                                            }}
+
+                                        >
+                                            <Text style={{ color: 'white', fontSize: 30 }}>
+                                                Delete
+                                        </Text>
+                                        </TouchableOpacity>
+                                    )
+                                    : null
+                            }
 
                             <TouchableOpacity
-                                style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                style={{ backgroundColor: '#e1814a', padding: 2, borderRadius: 98, alignItems: 'center', marginTop: 9, marginLeft: 5, marginRight: 5 }}
                                 onPress={() => {
                                     // console.log('Before press btn ',this.state.joinbtn)
                                     (this.state.joinbtn === "Join") ? this.addjoin() : this.deljoin()
@@ -447,7 +510,7 @@ class Description extends React.Component {
                                 (this.state.event.createby === this.state.user.userid)
                                     ? (
                                         <TouchableOpacity
-                                            style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                            style={{ backgroundColor: "#e1924a", padding: 2, borderRadius: 98, alignItems: 'center', marginTop: 9, marginLeft: 5, marginRight: 5 }}
                                             onPress={() => {
                                                 // Actions.CreateEvent();
                                                 this.props.navigation.navigate('UpdateEvent', {
@@ -468,7 +531,7 @@ class Description extends React.Component {
                                 (this.state.event.createby === this.state.user.userid)
                                     ? (
                                         <TouchableOpacity
-                                            style={{ backgroundColor: 'grey', padding: 15, borderRadius: 5, alignItems: 'center' }}
+                                            style={{ backgroundColor: '#e1a24a', padding: 2, borderRadius: 98, alignItems: 'center', marginTop: 9, marginLeft: 5, marginRight: 5 }}
                                             onPress={() => {
                                                 // this.props.navigate('UserSetting')
                                                 this.props.navigation.navigate('Joined', {
@@ -478,7 +541,7 @@ class Description extends React.Component {
 
                                         >
                                             <Text style={{ color: 'white', fontSize: 30 }}>
-                                                All Join
+                                                All Joined
                                         </Text>
                                         </TouchableOpacity>
                                     )
@@ -493,39 +556,34 @@ class Description extends React.Component {
                                 style={styles.posterImg} /> */}
                         {/* <Image source={poster} style={styles.posterStyle} ImageResizeMode="repeat" />
                         </Transition> */}
-                        <Image
-                            style={styles.posterStyle}
-                            // source={this.props.image}
-                            source={event.posterpic}
-                        // source={imgposter1}
-
-                        />
-                        <View style={{ padding: 20 }}>
+                        <View style={{ padding: 20, fontWeight: 'bold' }}>
                             <Text style={{ fontSize: 23 }}>{event.topic}</Text>
                             {/* <Text style={{ fontSize: 15 }}>Date    : {event.eventstdate}</Text> */}
-                            <Text style={{ fontSize: 15 }}>Date    : {this.setFormatDate(event.eventstdate.getDate(), event.eventstdate.getMonth() + 1, event.eventstdate.getFullYear())}</Text>
-                            <Text style={{ fontSize: 15 }}>time    : {this.setFormatTime(event.eventstdate.getHours(), event.eventstdate.getMinutes())} </Text>
-                            <Text style={{ fontSize: 15 }}>Place   : {event.location}</Text>
-                            <Text style={{ fontSize: 15 }}>Contact : </Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Date    : {this.setFormatDate(event.eventstdate.getDate(), event.eventstdate.getMonth() + 1, event.eventstdate.getFullYear())}</Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>time    : {this.setFormatTime(event.eventstdate.getHours(), event.eventstdate.getMinutes())} </Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Place   : {event.location}</Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Contact : </Text>
                             <View style={styles.iconView}>
                                 <Image source={facebook} style={styles.fb} />
-                                <Text style={{ fontSize: 15 }}>{event.facebook}</Text>
+                                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{event.facebook}</Text>
                             </View>
-                            <Text style={{ fontSize: 15 }}>Description : </Text>
-                            <Text style={{ fontSize: 15 }}>{event.description}</Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Description : </Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{event.description}</Text>
 
                         </View>
                     </View>
 
-                    <View style={{ paddingLeft: 10, width: '100%', resizeMode: 'stretch', backgroundColor: '#e1dbdb', paddingVertical: 15, flexDirection: 'row' }}  >
+                    <View style={{ paddingLeft: 10, width: '100%', resizeMode: 'stretch', backgroundColor: '#cc8959', paddingVertical: 15, flexDirection: 'row' }}  >
                         <Icon name='comment-processing' type='material-community' />
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}> Comments ({this.state.comment.length})</Text>
                     </View>
+                    <View style={{ marginBottom: 3 }}>
 
-                    <FlatList
-                        data={this.state.comment}
-                        renderItem={({ item }) => this.renderPost(item)}
-                    />
+                        <FlatList
+                            data={this.state.comment}
+                            renderItem={({ item }) => this.renderPost(item)}
+                        />
+                    </View>
 
                 </ScrollView>
 
@@ -536,7 +594,7 @@ class Description extends React.Component {
                         style={styles.buttonBar}
                     />
 
-                    <View >
+                    <View>
                         <View style={styles.txtStyle}>
                             {/* Input */}
                             <TextInput
@@ -584,18 +642,18 @@ const styles = StyleSheet.create({
     // imgStyle: {alignSelf: 'flex-start', width: 200, height: 200 },
     // desStyle: {marginBottom: 16, fontSize: 20},
     // viewBtn: {flexDirection: 'column', height: 55, width: '100%' },
-    // topicStyle: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
+    // topicStyle: {height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
     // setBtnStyle: {backgroundColor: '#ae5945', padding: 15, borderRadius: 15, alignItems: 'center'},
-    // setTextStyle: { color: 'white', fontSize: 20 },
-    // setTxtIn: { height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
-    // buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
-    // posterImg: { alignSelf: 'flex-start', width: '100%', height: 300 },
+    // setTextStyle: {color: 'white', fontSize: 20 },
+    // setTxtIn: {height: 50, borderColor: 'gray', borderWidth: 2, width: 180, height: 40 },
+    // buttonBar: {position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
+    // posterImg: {alignSelf: 'flex-start', width: '100%', height: 300 },
     topicStyle: { fontSize: 20, alignSelf: 'center' },
     desStyle: { flexDirection: 'row' },
     stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },
     imgLocation: { alignSelf: 'center', width: 30, height: 30 },
-    // posterStyle: { borderWidth: 2, borderColor: 'gray', width: '50%' },
+    // posterStyle: {borderWidth: 2, borderColor: 'gray', width: '50%' },
     searchView: { flexDirection: 'column', height: 55, width: '100%' },
     buttonView: { flexDirection: 'column', height: 55 },
     container: {

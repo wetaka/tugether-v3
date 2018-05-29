@@ -441,33 +441,63 @@ class CreateEvent extends React.Component {
 
     saveEvent(image) {
         return new Promise((resolve, reject) => {
+
             if (!this.validateNull(this.state.event.topic)) {
-                alert("Please enter Topic")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Please enter Topic")
+                    return;
+                })
+
             }
             if (!this.validateNull(this.state.event.location)) {
-                alert("Please enter location")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Please enter location")
+                    return;
+                })
             }
             if (!this.validateNotZero(this.state.event.limited)) {
-                alert("Please enter limited")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Please enter limited")
+                    return;
+                })
             }
             if (!this.validateMoreThan10000(this.state.event.limited)) {
-                alert("Limited can not more than 10000")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Limited can not more than 10000")
+                    return;
+                })
             }
             if (!this.validateHashTag(this.state.event.hashtag)) {
-                alert("Last words cannot have #")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Last words cannot have #")
+                    return;
+                })
             }
             if (!this.validateSpace(this.state.event.hashtag)) {
-                alert("Cannot have white spaces!")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Cannot have white spaces!")
+                    return;
+                })
             }
             if (this.state.event.categoryid === []) {
-                alert("Category is null")
-                return;
+                this.setState({
+                    loader: false
+                }, () => {
+                    alert("Category is null")
+                    return;
+                })
             }
 
             const date_now = new Date()
@@ -609,7 +639,7 @@ class CreateEvent extends React.Component {
                                                         />
                                                     </View>
                                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
+                                                        <Icon name='date-range' type='material-icons' size={50} color='#e1654a'
                                                         />
                                                     </View>
 
@@ -631,7 +661,7 @@ class CreateEvent extends React.Component {
                                                         />
                                                     </View>
                                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                                        <Icon name='date-range' type='material-icons' size={50} color='#6d616f'
+                                                        <Icon name='date-range' type='material-icons' size={50} color='#e1654a'
                                                         />
                                                     </View>
 
@@ -655,7 +685,7 @@ class CreateEvent extends React.Component {
                                                         />
                                                     </View>
                                                     <View style={{ alignSelf: 'flex-end', paddingBottom: 3 }}>
-                                                        <Icon name='access-time' type='material-icons' size={50} color='#6d616f'
+                                                        <Icon name='access-time' type='material-icons' size={50} color='#e1654a'
                                                         />
                                                     </View>
 

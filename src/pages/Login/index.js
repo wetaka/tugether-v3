@@ -12,7 +12,7 @@ import {
   CustomTabs
 } from 'react-native-custom-tabs';
 import CookieManager from 'react-native-cookies';
-import { resolve } from "path";
+
 
 const { width } = Dimensions.get("window");
 

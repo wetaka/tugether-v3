@@ -18,6 +18,7 @@ import { API_URL } from "../../config/api";
 import ListCategory from '../../components/ListCategory';
 import { Transition } from 'react-navigation-fluid-transitions';
 import HeaderText from "../../components/HeaderText";
+import { Button, Divider } from 'react-native-elements';
 
 const ROW_HEIGHT = 650;
 const COLS = 2;
@@ -68,9 +69,9 @@ const { width, height } = Dimensions.get('window');
 class Home extends React.Component {
 
   static navigatorOptions = {
-   header: {
-     visible :false 
-   }
+    header: {
+      visible: false
+    }
   };
 
   state = {
@@ -83,7 +84,8 @@ class Home extends React.Component {
     words: [],
     isSelectCategory: 0,
     maxSize: 0,
-    event: []
+    event: [],
+    loader: false,
   };
 
 
@@ -100,7 +102,7 @@ class Home extends React.Component {
       return {
         ...d,
         // posterpic: { uri: d.posterpic },
-        posterpic: imgposter1,
+        posterpic: {uri : d.posterpic},
         eventstdate: new Date(d.eventstdate)
       };
     });
@@ -117,7 +119,8 @@ class Home extends React.Component {
       .then((data) => {
         console.log('get eventid', data)
         this.setState({
-          event: this.setEventAll(data)
+          event: this.setEventAll(data),
+          loader: false
 
         }, () => { console.log("test state", this.state) });
         //console.log(this.props.eventid)
@@ -159,8 +162,8 @@ class Home extends React.Component {
     if (this.isFromLoginPage()) {
       console.log("if jaaaaaaaaaaaaaaaaaaaaaa")
       this.getUserByID();
-      const userid = this.props.navigation.getParam('userid', '');      
-      
+      const userid = this.props.navigation.getParam('userid', '');
+
       console.log("fixbug ComponentWillMount if", userid)
     }
     else {
@@ -171,6 +174,9 @@ class Home extends React.Component {
   }
 
   getCurrentUser() {
+    this.setState({
+      loader: true
+    })
     return AsyncStorage.getItem('CURRENT_USER')
       .then(value => {
         if (value) {
@@ -196,9 +202,9 @@ class Home extends React.Component {
     console.log('isFromLoginPage', this.props)
     console.log(this.props)
 
-    const userid = this.props.navigation.getParam('userid', '');   
-    console.log('get user => ', userid);   
-    
+    const userid = this.props.navigation.getParam('userid', '');
+    console.log('get user => ', userid);
+
     return !!(userid)
   }
 
@@ -209,8 +215,8 @@ class Home extends React.Component {
     if (this.isFromLoginPage()) {
       console.log("if jaaaaaaaaaaaaaaaaaaaaaa")
       this.getUserByID();
-      const userid = this.props.navigation.getParam('userid', '');      
-      
+      const userid = this.props.navigation.getParam('userid', '');
+
       console.log("fixbug ComponentWillMount if", userid)
     }
     else {
@@ -404,8 +410,8 @@ class Home extends React.Component {
   }
 
   render() {
-    const userid = this.props.navigation.getParam('userid', '');  
-    console.log('get user in render', userid);  
+    const userid = this.props.navigation.getParam('userid', '');
+    console.log('get user in render', userid);
     return (
       <View style={{ flex: 1 }}>
 
@@ -439,7 +445,7 @@ class Home extends React.Component {
         />
 
         < ScrollView >
-          <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
+          <View style={{  flex: 1,  borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
 
             <View style={{ flex: 1 }}>
               {this.state.event
@@ -475,7 +481,8 @@ class Home extends React.Component {
                       </View>
 
                       <Text style={styles.topicStyle}>{c.topic}</Text>
-                      <Text style={{ fontSize: 20 }}>________________________________</Text>
+                      <Divider style={{ backgroundColor: '#4c4a45' }}/>
+                      {/* <Text style={{ fontSize: 20 }}>________________________________</Text> */}
                       <View style={styles.desStyle}>
                         <View style={styles.stdStyle}>
                           {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>{c.eventstdate}</Text> */}
@@ -522,7 +529,7 @@ class Home extends React.Component {
 
                         this.props.navigation.navigate('Description', {
                           eventid: c.id,
-                          image: c.posterpic,
+                          // image: c.posterpic,
                         });
 
                       }}>
@@ -544,7 +551,8 @@ class Home extends React.Component {
 
 
                       <Text style={styles.topicStyle}>{c.topic}</Text>
-                      <Text style={{ fontSize: 20 }}>________________________________</Text>
+                      {/* <Text style={{ fontSize: 20 }}>________________________________</Text> */}
+                      <Divider style={{ backgroundColor: '#4c4a45' }} />
                       <View style={styles.desStyle}>
                         <View style={styles.stdStyle}>
                           <Text style={{ fontSize: 15, alignSelf: 'center' }}>{this.setFormatDate(c.eventstdate.getDate(), c.eventstdate.getMonth() + 1, c.eventstdate.getFullYear())}</Text>
@@ -630,8 +638,10 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   buttonBar: { position: 'absolute', width: '100%', height: 55 },
-  posterImg: { alignSelf: 'flex-start', width: '100%', borderTopLeftRadius: 10, borderTopRightRadius: 10 },
-  topicStyle: { fontSize: 20, alignSelf: 'center' },
+  
+  //edit height 
+  posterImg: { alignSelf: 'flex-start', width: '100%', height:100,borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+  topicStyle: { fontSize: 20, alignSelf: 'center',paddingVertical: 7 },
   desStyle: { flexDirection: 'row', alignItems: 'center' },
   stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },

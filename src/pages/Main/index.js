@@ -28,7 +28,7 @@ import SearchHeader from "../../components/SearchHeader";
 import { API_URL } from "../../config/api";
 import { Transition } from 'react-navigation-fluid-transitions';
 import HeaderMain from "../../components/HeaderMain";
-
+import { Button, Divider } from 'react-native-elements';
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,16 +55,24 @@ class Main extends React.Component {
       lastname: ""
     },
     maxSize: 0,
-    event: []
+    event: [],
+    post: true,
+    isselectap: true,
+    isselectwt: false,
+    mp: true,
+    uc: false,
+    hr: false
+
+
   };
 
 
-  
+
   static navigatorOptions = {
     header: {
-      visible :false 
+      visible: false
     }
-   };
+  };
 
   // renderPost(item) {
   //   // console.log('--------- tert')
@@ -90,7 +98,7 @@ class Main extends React.Component {
   //           //   },
   //           // });
 
-            
+
 
   //           this.props.navigation.navigate('Description',{
   //             eventid: item.id
@@ -125,7 +133,7 @@ class Main extends React.Component {
       return {
         ...d,
         // posterpic: { uri: d.posterpic },
-        posterpic: imgposter1,
+        posterpic: { uri: d.posterpic },
         eventstdate: new Date(d.eventstdate)
       };
     });
@@ -147,7 +155,7 @@ class Main extends React.Component {
               firstname: value.firstname,
               lastname: value.lastname
             }
-          }, () => { this.getYourEvent() });
+          }, () => { this.getYourEventApprove() });
           ////////////////////WIP////////////////
 
         }
@@ -178,6 +186,10 @@ class Main extends React.Component {
         this.setState({
           event: this.setEventAll(data.data),
           maxSize: data.max_size,
+          post: false,
+          mp: false,
+          uc: true,
+          hr: false
         }, () => { console.log("test state upcoming", this.state) });
         //console.log(this.props.eventid)
       })
@@ -188,16 +200,45 @@ class Main extends React.Component {
   }
 
 
-  getYourEvent() {
+  getYourEventApprove() {
     // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-    fetch(API_URL + 'get-your-event/' + this.state.user.userid)
+    fetch(API_URL + 'get-your-event-approve/' + this.state.user.userid)
       .then((response) => response.json())
       .then((data) => {
         console.log('get your eventid', data)
         this.setState({
           event: this.setEventAll(data.data),
           maxSize: data.max_size,
+          post: true,
+          isselectap: true,
+          isselectwt: false,
+          mp: true,
+          uc: false,
+          hr: false
+        }, () => { console.log("test state get your event", this.state) });
+        //console.log(this.props.eventid)
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Fail");
+      });
+  }
 
+  getYourEventWaitApprove() {
+    // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
+    fetch(API_URL + 'get-your-event-waitapprove/' + this.state.user.userid)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('get your eventid', data)
+        this.setState({
+          event: this.setEventAll(data.data),
+          maxSize: data.max_size,
+          post: true,
+          isselectap: false,
+          isselectwt: true,
+          mp: true,
+          uc: false,
+          hr: false
         }, () => { console.log("test state get your event", this.state) });
         //console.log(this.props.eventid)
       })
@@ -220,7 +261,10 @@ class Main extends React.Component {
         this.setState({
           event: this.setEventAll(data.data),
           maxSize: data.max_size,
-
+          post: false,
+          mp: false,
+          uc: false,
+          hr: true
         }, () => { console.log("test state past", this.state) });
         //console.log(this.props.eventid)
       })
@@ -289,13 +333,18 @@ class Main extends React.Component {
           <View style={{ flexDirection: 'row' }}>
 
             <TouchableOpacity
-              style={styles.btnEvent}
+              style={{
+                backgroundColor: (this.state.mp) ? '#ad2e00' : '#ae5945',
+                paddingVertical: 10,
+                flex: 1,
+                alignItems: 'center'
+              }}
               onPress={() => {
                 //   String a = "test1";
                 //   String b = "test b";
                 //   System.out.print('a is:' + a);
                 // alert(this.state.userid)
-                this.getYourEvent()
+                this.getYourEventApprove()
               }}
             >
               <Text style={{ color: 'white' }}>
@@ -303,8 +352,8 @@ class Main extends React.Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{
-                backgroundColor: '#ae5945',
+               style={{
+                backgroundColor: (this.state.uc) ? '#ad2e00' : '#ae5945',
                 paddingVertical: 10,
                 flex: 1,
                 alignItems: 'center'
@@ -322,7 +371,12 @@ class Main extends React.Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.btnEvent}
+               style={{
+                backgroundColor: (this.state.hr) ? '#ad2e00' : '#ae5945',
+                paddingVertical: 10,
+                flex: 1,
+                alignItems: 'center'
+              }}
               onPress={() => {
                 //   String a = "test1";
                 //   String b = "test b";
@@ -339,8 +393,54 @@ class Main extends React.Component {
         </View>
 
         < ScrollView >
-          <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
 
+          {
+            (this.state.post)
+              ? (
+                <View style={{ flex: 1, flexDirection: 'row', paddingBottom: 5 }}>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: (this.state.isselectap) ? '#f4bc44' : '#ae5945',
+                      paddingVertical: 10,
+                      flex: 1,
+                      alignItems: 'center'
+                    }}
+                    onPress={() => {
+                      //   String a = "test1";
+                      //   String b = "test b";
+                      //   System.out.print('a is:' + a);
+                      // alert(this.state.userid)
+                      this.getYourEventApprove()
+                    }}
+                  >
+                    <Text style={{ color: 'white' }}>
+                      Approved
+                      </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: (this.state.isselectwt) ? '#f4bc44' : '#ae5945',
+                      paddingVertical: 10,
+                      flex: 1,
+                      alignItems: 'center'
+                    }}
+                    onPress={() => {
+                      //   String a = "test1";
+                      //   String b = "test b";
+                      //   System.out.print('a is:' + a);
+                      // alert(this.state.userid)
+                      this.getYourEventWaitApprove()
+                    }}
+                  >
+                    <Text style={{ color: 'white' }}>
+                      Proceed
+                      </Text>
+                  </TouchableOpacity>
+                </View>
+              )
+              : null
+          }
+          <View style={{ flex: 1, borderRightWidth: 1, borderColor: 'grey', flexDirection: 'row' }}>
             <View style={{ flex: 1 }}>
               {this.state.event
                 .filter((c, index) => index % 2 === 0)
@@ -368,14 +468,15 @@ class Main extends React.Component {
                       <View>
                         {/* <View style={{ flex: 1 }}> */}
 
-                        <Image source={imgposter1}
+                        <Image source={c.posterpic}
                           resizeMode={'cover'}
                           style={styles.posterImg} />
 
                       </View>
 
                       <Text style={styles.topicStyle}>{c.topic}</Text>
-                      <Text style={{ fontSize: 20 }}>________________________________</Text>
+                      <Divider style={{ backgroundColor: '#4c4a45' }} />
+                      {/* <Text style={{ fontSize: 20 }}>________________________________</Text> */}
                       <View style={styles.desStyle}>
                         <View style={styles.stdStyle}>
                           {/* <Text style={{ fontSize: 15, alignSelf: 'center' }}>{c.eventstdate}</Text> */}
@@ -435,7 +536,7 @@ class Main extends React.Component {
                           style={{ flex: 1 }}
                           sharedElementId={"test"}
                         > */}
-                        <Image source={imgposter1}
+                        <Image source={c.posterpic}
                           resizeMode={'cover'}
                           style={styles.posterImg} />
 
@@ -444,7 +545,8 @@ class Main extends React.Component {
 
 
                       <Text style={styles.topicStyle}>{c.topic}</Text>
-                      <Text style={{ fontSize: 20 }}>________________________________</Text>
+                      <Divider style={{ backgroundColor: '#4c4a45' }} />
+                      {/* <Text style={{ fontSize: 20 }}>________________________________</Text> */}
                       <View style={styles.desStyle}>
                         <View style={styles.stdStyle}>
                           <Text style={{ fontSize: 15, alignSelf: 'center' }}>{this.setFormatDate(c.eventstdate.getDate(), c.eventstdate.getMonth() + 1, c.eventstdate.getFullYear())}</Text>
@@ -515,8 +617,8 @@ const styles = StyleSheet.create({
   btnItem: { borderWidth: 2, borderColor: 'gray', width: '50%' },
   buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
 
-  posterImg: { alignSelf: 'flex-start', width: '100%', borderTopLeftRadius: 10, borderTopRightRadius: 10 },
-  topicStyle: { fontSize: 20, alignSelf: 'center' },
+  posterImg: { alignSelf: 'flex-start', width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+  topicStyle: { fontSize: 20, alignSelf: 'center', paddingVertical: 7 },
   desStyle: { flexDirection: 'row', alignItems: 'center' },
   stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   imgLine: { flex: 1, flexDirection: 'row', alignItems: 'center' },
@@ -527,7 +629,7 @@ const styles = StyleSheet.create({
   buttonView: { flexDirection: 'column', height: 55 },
   userStyle: { paddingVertical: 7, flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' },
   userIDsty: { fontSize: 25, fontWeight: 'bold' },
-  imgUser: { alignSelf: 'flex-start', width:150 , height: 150, borderRadius:100 },
+  imgUser: { alignSelf: 'flex-start', width: 150, height: 150, borderRadius: 100 },
   btnEvent: { backgroundColor: '#ae5945', paddingVertical: 10, flex: 1, alignItems: 'center' },
   container: {
     flex: 1,

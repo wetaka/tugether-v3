@@ -1,5 +1,5 @@
 import React from 'react';
-import { View , FlatList, TouchableOpacity, Text , Image, StyleSheet} from 'react-native';
+import { View, FlatList, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { API_URL } from "../../config/api";
 import HomeIcon from '../../Images/homeicon.png';
@@ -60,11 +60,11 @@ class ListCategory extends React.PureComponent {
         });
     }
 
-    limitCategoryText(text){
-        if(text.length > 12){
+    limitCategoryText(text) {
+        if (text.length > 12) {
             return text.substring(12, 0) + "...";
         }
-        else{
+        else {
             return text
         }
     }
@@ -78,37 +78,38 @@ class ListCategory extends React.PureComponent {
         const icon = icons[item.id]
         return (
             <TouchableOpacity
-            style={styles.iconStyle}
-              onPress={() => {
-                // this.setState({ isSelect: item.id })
-                this.props.filterCategory(item.id)
-                // Actions.Description({ eventid: item.id });
-              }}>
-              {/* <Image source={HomeIcon} style={{ width: 20, height: 20, backgroundColor: (this.state.isSelect === item.id) ? 'green' : 'white' }} */}
-          {/* /> */}
-          <Icon name={icon.iconName} type={icon.iconType} size={20}  color={(this.props.isSelectCategory === item.id) ? '#f9e076' : 'white'}
-            />          
-              <Text style={{fontSize: 15, alignSelf: 'center', color: (this.props.isSelectCategory === item.id) ? '#f9e076' : 'white'}}>
-                { this.limitCategoryText(item.categoryname) }
-            </Text>
-    
-              
+                style={styles.iconStyle}
+                onPress={() => {
+                    // this.setState({ isSelect: item.id })
+                    this.props.filterCategory(item.id)
+                    // Actions.Description({ eventid: item.id });
+                }}>
+                {/* <Image source={HomeIcon} style={{ width: 20, height: 20, backgroundColor: (this.state.isSelect === item.id) ? 'green' : 'white' }} */}
+                {/* /> */}
+                <Icon name={icon.iconName} type={icon.iconType} size={20} color={(this.props.isSelectCategory === item.id) ? '#f9e076' : 'white'}
+                />
+                <Text style={{ fontSize: 15, alignSelf: 'center', color: (this.props.isSelectCategory === item.id) ? '#f9e076' : 'white' }}>
+                    {this.limitCategoryText(item.categoryname)}
+                </Text>
+
+
             </TouchableOpacity>
         )
-      }
+    }
 
 
     render() {
         return (
 
-
-            <FlatList
-                data={this.state.category}
-                renderItem={({ item }) => this.renderCategories(item)}
-                extraData={this.props}
-                keyExtractor={({ id }) => id}
-                horizontal={true}
-            />
+            <View style={{ height: "7%" }}>
+                <FlatList
+                    data={this.state.category}
+                    renderItem={({ item }) => this.renderCategories(item)}
+                    extraData={this.props}
+                    keyExtractor={({ id }) => id}
+                    horizontal={true}
+                />
+            </View>
 
         );
     }
@@ -116,9 +117,9 @@ class ListCategory extends React.PureComponent {
 
 
 const styles = StyleSheet.create({
-    iconStyle:{padding:10, paddingTop: 15, width:140 ,backgroundColor: 'rgb(225,101,74)', alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'column' },
-    textStyle:{fontSize: 15, alignSelf: 'center' },
+    iconStyle: { padding: 10, paddingTop: 15, width: 140, backgroundColor: 'rgb(225,101,74)', alignItems: 'center', justifyContent: 'center', borderRightWidth: 1, borderColor: 'grey', flexDirection: 'column' },
+    textStyle: { fontSize: 15, alignSelf: 'center' },
 
-  })
+})
 
 export default ListCategory;

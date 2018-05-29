@@ -20,10 +20,10 @@ export default class HeaderMain extends Component {
                         </View>
 
                         <View style={{ flex: 1 , justifyContent: 'center',flexDirection:'row'}}>
-                            <Icon name='plus-circle' type='feather' size={40} color='white'
-                                />
+                            {/* <Icon name='plus-circle' type='feather' size={40} color='white'
+                                /> */}
                             <Text style={{ color: 'white', fontSize: 30}}>
-                               Main
+                               Profile
                             </Text>
                             
                         </View>

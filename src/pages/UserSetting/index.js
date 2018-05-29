@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity, TextInput, ScrollView, StyleSheet, CheckBox, AsyncStorage } from 'react-native';
-import kaimook from '../../Images/mook.jpg'
+import kaimook from '../../Images/userdefault.png'
 import { API_URL, FB_FUNCTION_URL } from "../../config/api";
 import { Button, Divider } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -237,13 +237,13 @@ class UserSetting extends React.Component {
                 this.setState({
                     loader: false
                 }
-                ,() => {
-                    if(!image){
-                       alert("Successful") 
+                    , () => {
+                        if (!image) {
+                            alert("Successful")
+                        }
+
                     }
-                    
-                }
-            )
+                )
             )
             .catch((error) => {
                 console.error(error);
@@ -291,13 +291,24 @@ class UserSetting extends React.Component {
                     console.log("fixbug getUserByID then 1")
 
                     // this.setState({ user: data });
-                    this.setState({
-                        user: {
-                            ...data,
-                            // userpic: kaimook,
-                            userpic: { uri: data.userpic } //TODO remove ******************************************************
-                        }
-                    })
+                    if (this.state.userpic !== kaimook) {
+                        this.setState({
+                            user: {
+                                ...data,
+                                // userpic: kaimook,
+                                userpic: { uri: data.userpic } //TODO remove ******************************************************
+                            }
+                        })
+                    }
+                    else {
+                        this.setState({
+                            user: {
+                                ...data,
+                                userpic: kaimook,
+                                // userpic: { uri: data.userpic } //TODO remove ******************************************************
+                            }
+                        })
+                    }
 
                     return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(data));
                     // console.log(this.props.navigation.state.params.userid)                      
@@ -435,7 +446,7 @@ class UserSetting extends React.Component {
                                                 large
                                                 icon={{ name: 'edit-2', type: 'feather' }}
                                                 title='Edit profile'
-                                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#8B0000' }}
+                                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#efcb53' }}
 
                                                 onPress={async () => {
                                                     this.updateUser()
@@ -449,7 +460,7 @@ class UserSetting extends React.Component {
                                                 large
                                                 icon={{ name: 'logout', type: 'material-community' }}
                                                 title='Log Out'
-                                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#4B0082' }}
+                                                buttonStyle={{ borderRadius: 10, marginVertical: 5, backgroundColor: '#e1654a' }}
 
                                                 onPress={() => {
                                                     AsyncStorage.setItem('CURRENT_USER', "").then(() => {
