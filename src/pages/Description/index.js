@@ -330,7 +330,7 @@ class Description extends React.Component {
     }
 
     getAllComment() {
-        fetch(API_URL + 'comment-event/1')
+        fetch(API_URL + 'comment-event/' + this.props.navigation.state.params.eventid)
             .then((response) => response.json())
             .then((data) => {
                 console.log('get comment All', data)

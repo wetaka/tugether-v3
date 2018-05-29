@@ -323,7 +323,11 @@ class UpdateEvent extends React.Component {
         let d = moment([date_now.getFullYear(), date_now.getMonth(), date_now.getDate()]);
 
         if (c.diff(d, 'days') <= 0) {
+            this.setState({
+                loader: false
+            })
             alert("Start Date cannot less than Today")
+            
             return;
         } // 1
 
@@ -331,6 +335,9 @@ class UpdateEvent extends React.Component {
         let f = moment([this.state.event.eventstdate.getFullYear(), this.state.event.eventstdate.getMonth(), this.state.event.eventstdate.getDate()]);
 
         if (e.diff(f, 'days') < 0) {
+            this.setState({
+                loader: false
+            })
             alert("End Date cannot less than Start Date")
             return;
         } // 1

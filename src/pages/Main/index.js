@@ -16,7 +16,7 @@ import imgposter1 from '../../Images/poster1.jpg'
 import imgposter2 from '../../Images/poster2.jpg'
 import location from '../../Images/location.png'
 import line from '../../Images/line.png'
-import Kaimook from '../../Images/mook.jpg'
+import Kaimook from '../../Images/userdefault.png'
 import Buttonbar from '../../Images/bar.jpg';
 import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
@@ -32,17 +32,17 @@ import { Button, Divider } from 'react-native-elements';
 
 const { width, height } = Dimensions.get('window');
 
-const posters = [
-  {
-    id: '12345555',
-    imgposter: imgposter1,
-    name: 'TU Freshynight',
-    month: 'NOV',
-    date: '16',
-    img: location,
-    place: 'Gym 5',
-  }
-]
+// const posters = [
+//   {
+//     id: '12345555',
+//     imgposter: imgposter1,
+//     name: 'TU Freshynight',
+//     month: 'NOV',
+//     date: '16',
+//     img: location,
+//     place: 'Gym 5',
+//   }
+// ]
 
 
 class Main extends React.Component {
@@ -61,7 +61,8 @@ class Main extends React.Component {
     isselectwt: false,
     mp: true,
     uc: false,
-    hr: false
+    hr: false,
+    loader: true
 
 
   };
@@ -153,7 +154,8 @@ class Main extends React.Component {
             user: {
               userid: value.userid,
               firstname: value.firstname,
-              lastname: value.lastname
+              lastname: value.lastname,
+              userpic : {uri : value.userpic}
             }
           }, () => { this.getYourEventApprove() });
           ////////////////////WIP////////////////
@@ -328,7 +330,7 @@ class Main extends React.Component {
               <Text style={styles.userIDsty}> {user.userid} </Text>
               <Text style={{ fontSize: 20 }}> {user.firstname} {user.lastname} </Text>
             </View>
-            <Image source={Kaimook} style={styles.imgUser} />
+            <Image source={user.userpic} style={styles.imgUser} />
           </View>
           <View style={{ flexDirection: 'row' }}>
 
