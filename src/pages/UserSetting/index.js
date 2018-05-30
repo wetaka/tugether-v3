@@ -288,7 +288,7 @@ class UserSetting extends React.Component {
             return fetch(API_URL + 'user/' + userid)
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log("fixbug getUserByID then 1")
+                    console.log("fixbug getUserByID then ", data)
 
                     // this.setState({ user: data });
                     if (this.state.userpic !== kaimook) {

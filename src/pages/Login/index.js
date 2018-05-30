@@ -168,13 +168,13 @@ class Login extends React.Component {
           source={Bg}
           style={styles.bgStyle}
         />
-        <View style={{ padding: 30, paddingTop: 0 }}>
+        <View style={{justifyContent : 'center', flex : 1 }}>
           <Image
             source={TULogo}
             style={styles.tulogo}
             ImageResizeMode="repeat"
           />
-          <View style={{ paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 10 , paddingHorizontal : 10 }}>
             <CustomInput
               placeholder="Username"
               keyboardType="numeric"
@@ -186,7 +186,7 @@ class Login extends React.Component {
             />
           </View>
 
-          <View style={{ paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 10, paddingHorizontal : 10 }}>
             <CustomInput
               placeholder="Password"
               keyboardType="numeric"
@@ -198,7 +198,7 @@ class Login extends React.Component {
               value={this.state.password}
             />
           </View>
-          <View style={{ paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 50 , paddingHorizontal : 50 }}>
             <TouchableOpacity
               style={styles.btnLogin}
               onPress={() => {
@@ -210,7 +210,7 @@ class Login extends React.Component {
               }}
             >
               <Text style={styles.loginText}>
-                Login via authen app
+                Login
               </Text>
             </TouchableOpacity>
 
@@ -233,14 +233,14 @@ class Login extends React.Component {
             // onMessage={m => this.onMessage(m)} 
             /> */}
 
-
-            <TouchableOpacity onPress={this.handleClick}>
+{/* ========================================================== */}
+            {/* <TouchableOpacity onPress={this.handleClick}>
 
               <View style={styles.button}>
                 <Text style={styles.text}>Open Authentication</Text>
               </View>
 
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* <TouchableOpacity onPress={this.handleGetCookies}>
 

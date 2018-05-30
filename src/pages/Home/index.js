@@ -640,7 +640,7 @@ const styles = StyleSheet.create({
   buttonBar: { position: 'absolute', width: '100%', height: 55 },
   
   //edit height 
-  posterImg: { alignSelf: 'flex-start', width: '100%', height:100,borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+  posterImg: { alignSelf: 'flex-start', width: '100%', height:height,borderTopLeftRadius: 10, borderTopRightRadius: 10  },
   topicStyle: { fontSize: 20, alignSelf: 'center',paddingVertical: 7 },
   desStyle: { flexDirection: 'row', alignItems: 'center' },
   stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },

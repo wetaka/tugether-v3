@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity, CheckBox, TextInput, ScrollView, AsyncStorage, DatePickerAndroid, TimePickerAndroid, StyleSheet } from 'react-native';
 import Search from 'react-native-search-box';
-import posterFrame from '../../Images/posterframe.jpg';
+import posterFrame from '../../Images/addposter.jpg';
 import ImagePicker from 'react-native-image-picker';
 import Buttonbar from '../../Images/bar.jpg';
 import HomeIcon from '../../Images/homeicon.png';
@@ -136,30 +136,59 @@ class UpdateEvent extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 console.log('get eventid', data)
-                this.setState({
-                    event: {
-                        eventid: data.eventid,
-                        topic: data.topic,
-                        createby: data.createby,
-                        categoryid: [...data.categoryid],
-                        location: data.location,
-                        approve: data.approve,
-                        description: data.description,
-                        facebook: data.facebook,
-                        line: data.line,
-                        web: data.web,
-                        phone: data.phone,
-                        hashtag: data.hashtag,
-                        bcapprove: data.bcapprove,
-                        posterpic: { uri: data.posterpic },
-                        createdate: new Date(data.createdate),
-                        updatedate: data.updatedate,
-                        eventstdate: new Date(data.eventstdate),
-                        eventenddate: new Date(data.eventenddate),
-                        active: data.active,
-                        limited: data.limited
-                    }
-                }, () => { console.log(this.state) });
+                if (data.posterpic !== posterFrame) {
+                    this.setState({
+                        event: {
+                            eventid: data.eventid,
+                            topic: data.topic,
+                            createby: data.createby,
+                            categoryid: [...data.categoryid],
+                            location: data.location,
+                            approve: data.approve,
+                            description: data.description,
+                            facebook: data.facebook,
+                            line: data.line,
+                            web: data.web,
+                            phone: data.phone,
+                            hashtag: data.hashtag,
+                            bcapprove: data.bcapprove,
+                            posterpic: { uri: data.posterpic },
+                            createdate: new Date(data.createdate),
+                            updatedate: data.updatedate,
+                            eventstdate: new Date(data.eventstdate),
+                            eventenddate: new Date(data.eventenddate),
+                            active: data.active,
+                            limited: data.limited
+                        }
+                    })
+                }
+                else {
+                    this.setState({
+                        event: {
+                            eventid: data.eventid,
+                            topic: data.topic,
+                            createby: data.createby,
+                            categoryid: [...data.categoryid],
+                            location: data.location,
+                            approve: data.approve,
+                            description: data.description,
+                            facebook: data.facebook,
+                            line: data.line,
+                            web: data.web,
+                            phone: data.phone,
+                            hashtag: data.hashtag,
+                            bcapprove: data.bcapprove,
+                            posterpic: posterFrame,
+                            createdate: new Date(data.createdate),
+                            updatedate: data.updatedate,
+                            eventstdate: new Date(data.eventstdate),
+                            eventenddate: new Date(data.eventenddate),
+                            active: data.active,
+                            limited: data.limited
+                        }
+                    })
+                }
+             
                 // console.log(this.props.eventid)
             })
 

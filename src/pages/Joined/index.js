@@ -12,6 +12,8 @@ import { API_URL } from "../../config/api";
 import Footer from "../../components/Footer";
 // import SearchHeader from "../../components/SearchHeader";
 import HeaderBack from "../../components/HeaderBack";
+import { Button, Divider } from 'react-native-elements';
+
 
 
 
@@ -44,7 +46,7 @@ class Joined extends React.Component {
 
     getEvent() {
         // alert('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
-        fetch(API_URL + 'get-join/'+this.props.navigation.state.params.eventid)
+        fetch(API_URL + 'get-join/' + this.props.navigation.state.params.eventid)
             .then((response) => response.json())
             .then((data) => {
                 console.log('get userid', data)
@@ -71,12 +73,12 @@ class Joined extends React.Component {
         return (
             <View style={{ flex: 1 }}>
                 <HeaderBack
-                    header={"Joined List"}
+                    header={"Joined List ( " +this.state.users.length+" people )"}
                     navigator={this.props.navigation}
                 />
 
                 <ScrollView style={styles.scrollStyle}>
-                    <View style={{ padding: 20 }}>
+                    <View style={{ flexDirection: 'column', alignItems: 'center', backgroundColor: 'white' , }}>
                         {
                             this.state.users.map((user) => {
                                 return (
@@ -84,11 +86,14 @@ class Joined extends React.Component {
                                         <View style={styles.viewStyle}>
                                             <Image source={kaimook} style={styles.userStyle} />
                                             <View>
-                                                <Text style={{ fontSize: 15 }}>{user.userid}</Text>
-                                                <Text style={{ fontSize: 15 }}>{user.firstname}  {user.lastname}</Text>
+                                                <Text style={{ fontSize: 20  ,fontWeight : 'bold', paddingHorizontal : 20}}>{user.userid}</Text>
+                                                <Text style={{ fontSize: 20 , paddingHorizontal :20}}>{user.firstname}  {user.lastname}</Text>
                                             </View>
                                         </View>
-                                        <Text style={{ fontSize: 25 }}>____________________________</Text>
+                                        <Divider/>
+
+                                        {/* <Text style={{ fontSize: 25 }}>____________________________</Text> */}
+
                                     </View>
                                 );
                             })
@@ -133,8 +138,8 @@ const styles = StyleSheet.create({
     searchView: { flexDirection: 'column', height: 55, width: '100%' },
     buttonView: { flexDirection: 'column', height: 55 },
     scrollStyle: { flexDirection: 'column', backgroundColor: "white", flex: 1 },
-    viewStyle: { flexDirection: 'row', alignItems: 'center' },
-    userStyle: { alignSelf: 'flex-start', width: 50, height: 50 },
+    viewStyle: { flexDirection: 'row', alignItems: 'center',paddingVertical: 20},
+    userStyle: { alignSelf: 'flex-start', width: 120, height: 120 ,borderRadius :100 ,},
 
 
 

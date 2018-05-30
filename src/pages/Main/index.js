@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
   btnItem: { borderWidth: 2, borderColor: 'gray', width: '50%' },
   buttonBar: { position: 'absolute', width: '100%', height: 55, resizeMode: 'stretch' },
 
-  posterImg: { alignSelf: 'flex-start', width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+  posterImg: { alignSelf: 'flex-start', width: '100%', height: height, borderTopLeftRadius: 10, borderTopRightRadius: 10 },
   topicStyle: { fontSize: 20, alignSelf: 'center', paddingVertical: 7 },
   desStyle: { flexDirection: 'row', alignItems: 'center' },
   stdStyle: { flex: 1, justifyContent: 'center', alignItems: 'center' },

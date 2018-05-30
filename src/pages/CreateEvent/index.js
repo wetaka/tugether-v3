@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, Image, Dimensions, TouchableOpacity, CheckBox, TextInput, ScrollView, AsyncStorage, DatePickerAndroid, TimePickerAndroid, StyleSheet } from 'react-native';
 import Search from 'react-native-search-box';
-import posterFrame from '../../Images/posterframe.jpg';
+import posterFrame from '../../Images/addposter.jpg';
 import ImagePicker from 'react-native-image-picker';
 import Buttonbar from '../../Images/bar.jpg';
 import HomeIcon from '../../Images/homeicon.png';
