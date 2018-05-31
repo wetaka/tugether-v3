@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "604909441032",
+    "firebase_url": "https://notireact.firebaseio.com",
+    "project_id": "notireact",
+    "storage_bucket": "notireact.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604909441032:android:f5641b3a9e3dfdf7",
+        "android_client_info": {
+          "package_name": "com.reactnoti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604909441032-ocsd1bnn19tjq4c7356s4m5rpt6jdkuh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reactnoti",
+            "certificate_hash": "46688976e6c5ec64eef1cde025156447b38f5db8"
+          }
+        },
+        {
+          "client_id": "604909441032-ugo7pkalir33hqgjuq3mb1eja9vh4it0.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "604909441032-ugo7pkalir33hqgjuq3mb1eja9vh4it0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOL-FpWDo7W5CwJhr_JdUN0PJzmij_iAc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604909441032-ugo7pkalir33hqgjuq3mb1eja9vh4it0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
