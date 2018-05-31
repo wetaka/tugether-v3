@@ -487,10 +487,11 @@ class Main extends React.Component {
 
                       <View>
                         {/* <View style={{ flex: 1 }}> */}
-
-                        <Image source={c.posterpic}
-                          resizeMode={'cover'}
-                          style={styles.posterImg} />
+                        <Transition shared={c.id}>
+                          <Image source={c.posterpic}
+                            resizeMode={'cover'}
+                            style={styles.posterImg} />
+                        </Transition>
 
                       </View>
 
@@ -556,9 +557,11 @@ class Main extends React.Component {
                           style={{ flex: 1 }}
                           sharedElementId={"test"}
                         > */}
-                        <Image source={c.posterpic}
-                          resizeMode={'cover'}
-                          style={styles.posterImg} />
+                        <Transition shared={c.id}>
+                          <Image source={c.posterpic}
+                            resizeMode={'cover'}
+                            style={styles.posterImg} />
+                        </Transition>
 
                         {/* </SharedElementTransition> */}
                       </View>

@@ -486,11 +486,11 @@ class Home extends React.Component {
 
                       <View>
                         {/* <View style={{ flex: 1 }}> */}
-
-                        <Image source={c.posterpic}
-                          resizeMode={'cover'}
-                          style={styles.posterImg} />
-
+                        <Transition shared={c.id}>
+                          <Image source={c.posterpic}
+                            resizeMode={'cover'}
+                            style={styles.posterImg} />
+                        </Transition>
                       </View>
 
                       <Text style={styles.topicStyle}>{c.topic}</Text>
@@ -542,7 +542,7 @@ class Home extends React.Component {
 
                         this.props.navigation.navigate('Description', {
                           eventid: c.id,
-                          // image: c.posterpic,
+                          image: c.posterpic,
                         });
 
                       }}>
@@ -555,9 +555,11 @@ class Home extends React.Component {
                           style={{ flex: 1 }}
                           sharedElementId={"test"}
                         > */}
-                        <Image source={c.posterpic}
-                          resizeMode={'cover'}
-                          style={styles.posterImg} />
+                        <Transition shared={c.id}>
+                          <Image source={c.posterpic}
+                            resizeMode={'cover'}
+                            style={styles.posterImg} />
+                        </Transition>
 
                         {/* </SharedElementTransition> */}
                       </View>

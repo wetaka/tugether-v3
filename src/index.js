@@ -1,6 +1,7 @@
 import { createStackNavigator } from 'react-navigation';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { FluidNavigator } from 'react-navigation-fluid-transitions';
 import Login from './pages/Login'
 import Category from './pages/Category'
 import Description from './pages/Description'
@@ -66,12 +67,49 @@ import UpdateEvent from './pages/UpdateEvent';
 //   })
 // }
 
+
+const MainNavigator = FluidNavigator({
+  Main: { screen: Main },
+  Description: { screen: Description },
+}, {
+  navigationOptions: {
+    gesturesEnabled: true,
+  },
+});
+
+const HomeNavigator = FluidNavigator({
+  Home: { screen: Home },
+  Description: { screen: Description },
+}, {
+  navigationOptions: {
+    gesturesEnabled: true,
+  },
+});
+
+class MainTransitionPage extends React.Component {
+  static router = MainNavigator.router;
+  render() {
+    return (
+      <MainNavigator navigation={this.props.navigation} />
+    );
+  }
+}
+
+class HomeTransitionPage extends React.Component {
+  static router = HomeNavigator.router;
+  render() {
+    return (
+      <HomeNavigator navigation={this.props.navigation} />
+    );
+  }
+}
+
 const RootNavigator = createStackNavigator({
   UserSetting: { screen: UserSetting },
-  Main: { screen: Main },
+  Main: { screen: MainTransitionPage },
   UpdateEvent: { screen: UpdateEvent },
   CreateEvent: { screen: CreateEvent },
-  Home: { screen: Home },
+  Home: { screen: HomeTransitionPage },
   Notificate: { screen: Notificate },
   Description: { screen: Description },
   Login: { screen: Login },
@@ -84,7 +122,6 @@ const RootNavigator = createStackNavigator({
 })
 
 export default RootNavigator;
-
 // export default () => (
 //   <Navigator />
 // );
