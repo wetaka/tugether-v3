@@ -146,6 +146,7 @@ class Main extends React.Component {
 
     return AsyncStorage.getItem('CURRENT_USER')
       .then(value => {
+        console.log('get Value ,,,', value)
         value = JSON.parse(value);
         console.log('value   ', value);
         if (value) {
@@ -311,6 +312,10 @@ class Main extends React.Component {
     hours = "0" + hours
     minutes = "0" + minutes
     return hours.substring(hours.length - 2, hours.length) + ":" + minutes.substring(minutes.length - 2, minutes.length)
+  }
+
+  componentWillReceiveProps() {
+    this.getCurrentUser();
   }
 
 

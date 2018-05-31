@@ -61,7 +61,7 @@ class Login extends React.Component {
   // }
 
   login() {
-    alert('http://192.168.1.11:8000/api/chk-first-login/' + this.state.userid)
+    // alert('http://192.168.1.11:8000/api/chk-first-login/' + this.state.userid)
     // fetch('http://172.25.79.95:8000/api/chk-first-login/' + this.state.userid)
     fetch(API_URL + 'chk-first-login/' + this.state.userid)
 

@@ -228,7 +228,13 @@ class UserSetting extends React.Component {
                 console.log('vinaja', responseJson)
                 // this.getidofuser()
                 // this.addfirstcategory()
-                return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(this.state.user))
+                return AsyncStorage.setItem(
+                    'CURRENT_USER',
+                    JSON.stringify({
+                        ...this.state.user,
+                        userpic: this.state.user.userpic.uri,
+                    })
+                )
 
             })
             .then(() =>
@@ -289,7 +295,7 @@ class UserSetting extends React.Component {
                     console.log("fixbug getUserByID then ", data)
 
                     // this.setState({ user: data });
-                    if (this.state.user.userpic !== kaimook) {
+                    if (data.userpic) {
                         this.setState({
                             user: {
                                 ...data,
@@ -354,6 +360,7 @@ class UserSetting extends React.Component {
 
 
     render() {
+        console.log('render state UserSetting user ', this.state)
         console.log(' render get props => ', this.props)
 
         if (this.state.user.userid) {

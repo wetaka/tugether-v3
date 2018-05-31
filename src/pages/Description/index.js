@@ -138,7 +138,7 @@ class Description extends React.Component {
                 }
                 else {
                     // Actions.Login();
-                    this.props.navigation.navigate('Login')
+                    // this.props.navigation.navigate('Login')
                     // this.props.navigator.push({
                     //     screen: 'Login'
                     // });

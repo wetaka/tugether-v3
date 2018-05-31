@@ -141,7 +141,10 @@ class Home extends React.Component {
         .then((data) => {
           console.log("fixbug getUserByID then 1")
           // this.setState({ category: this.setCategoriesWithSelect(data) });
-          return AsyncStorage.setItem('CURRENT_USER', JSON.stringify(data));
+          return AsyncStorage.setItem('CURRENT_USER', JSON.stringify({
+            ...data,
+            userpic: data.userpic,
+          }));
           // console.log(this.props.navigation.state.params.userid)                      
         })
         .then(() => {
@@ -209,9 +212,19 @@ class Home extends React.Component {
   }
 
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
     // this.getUser();
-    console.log("fixbug ComponentWillMount jaaaaa")
+    // console.log("fixbug componentWillReceiveProps Home", )
+    if (
+      nextProps.navigation.getParam('userid', '')
+      && !this.props.navigation.getParam('userid', '')
+    ) {
+    
+      console.log('============================= componentWillReceiveProps Home return', nextProps)
+      return;
+    }
+
+
     if (this.isFromLoginPage()) {
       console.log("if jaaaaaaaaaaaaaaaaaaaaaa")
       this.getUserByID();
