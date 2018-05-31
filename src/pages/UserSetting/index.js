@@ -160,9 +160,7 @@ class UserSetting extends React.Component {
                     // Actions.Login();
                     // this.props.navigation.navigate('Login')
 
-                    this.props.navigation.replace({
-                        screen: 'Login',
-                    });
+                    this.props.navigation.replace('Login');
 
                     // TODO
                     // this.props.navigator.push({
@@ -471,9 +469,7 @@ class UserSetting extends React.Component {
                                                         // this.props.navigator.push({
                                                         //   screen: 'Login'
                                                         // });
-                                                        this.props.navigation.replace({
-                                                            screen: 'Login',
-                                                        });
+                                                        this.props.navigation.replace('Login');
 
                                                     });
                                                 }}
