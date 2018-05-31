@@ -68,7 +68,7 @@ class Login extends React.Component {
 
       .then((response) => {
         if (response.ok) {
-          alert("Not First Login");
+          // alert("Not First Login");
 
           // this.props.navigator.push({
           //   screen: 'Home',
@@ -85,7 +85,7 @@ class Login extends React.Component {
 
 
         } else {
-          alert("First Login");
+          // alert("First Login");
           // Actions.Category({ userid: this.state.userid });
 
           this.props.navigation.navigate('Category', {

@@ -291,7 +291,7 @@ class UserSetting extends React.Component {
                     console.log("fixbug getUserByID then ", data)
 
                     // this.setState({ user: data });
-                    if (this.state.userpic !== kaimook) {
+                    if (this.state.user.userpic !== kaimook) {
                         this.setState({
                             user: {
                                 ...data,

@@ -269,7 +269,7 @@ class Description extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                eventid: 1,
+                eventid: this.props.navigation.state.params.eventid,
                 createby: this.state.user.userid,
                 details: "" + this.state.commentstr
 

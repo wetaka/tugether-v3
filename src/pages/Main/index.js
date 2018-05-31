@@ -16,7 +16,7 @@ import imgposter1 from '../../Images/poster1.jpg'
 import imgposter2 from '../../Images/poster2.jpg'
 import location from '../../Images/location.png'
 import line from '../../Images/line.png'
-import Kaimook from '../../Images/userdefault.png'
+import kaimook from '../../Images/userdefault.png'
 import Buttonbar from '../../Images/bar.jpg';
 import HomeIcon from '../../Images/homeicon.png';
 import NotiIcon from '../../Images/notiicon.png';
@@ -52,7 +52,8 @@ class Main extends React.Component {
     user: {
       userid: "",
       firstname: "",
-      lastname: ""
+      lastname: "",
+      userpic: kaimook
     },
     maxSize: 0,
     event: [],
@@ -141,7 +142,7 @@ class Main extends React.Component {
   }
 
   getCurrentUser() {
-    console.log("getCurrentUser")
+    console.log("getCurrentUser Main page")
 
     return AsyncStorage.getItem('CURRENT_USER')
       .then(value => {
@@ -149,15 +150,27 @@ class Main extends React.Component {
         console.log('value   ', value);
         if (value) {
           // We have data!!
+          if (value.userpic !== null) {
+            this.setState({
+              user: {
+                userid: value.userid,
+                firstname: value.firstname,
+                lastname: value.lastname,
+                userpic: { uri: value.userpic }
+              }
+            }, () => { this.getYourEventApprove() });
+          }
+          else{
+            this.setState({
+              user: {
+                userid: value.userid,
+                firstname: value.firstname,
+                lastname: value.lastname,
+                userpic: kaimook
+              }
+            }, () => { this.getYourEventApprove() });
+          }
 
-          this.setState({
-            user: {
-              userid: value.userid,
-              firstname: value.firstname,
-              lastname: value.lastname,
-              userpic : {uri : value.userpic}
-            }
-          }, () => { this.getYourEventApprove() });
           ////////////////////WIP////////////////
 
         }
@@ -305,7 +318,7 @@ class Main extends React.Component {
     console.log('render Main Props => ', this.props.navigation.navigate)
     const userid = this.props.navigation.getParam('userid', '');
     const { user } = this.state;
-
+    console.log("This.state    : ", user)
     console.log("Main push...", this.props)
 
     return (
@@ -354,7 +367,7 @@ class Main extends React.Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-               style={{
+              style={{
                 backgroundColor: (this.state.uc) ? '#ad2e00' : '#ae5945',
                 paddingVertical: 10,
                 flex: 1,
@@ -373,7 +386,7 @@ class Main extends React.Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-               style={{
+              style={{
                 backgroundColor: (this.state.hr) ? '#ad2e00' : '#ae5945',
                 paddingVertical: 10,
                 flex: 1,

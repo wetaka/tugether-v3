@@ -89,10 +89,10 @@ class Category extends React.Component {
             // console.log("+++++++++++++++++++++++++++++")
             // console.log(this.state.category)
             // console.log("----------------------------------------------")
-            // let result = this.state.category.filter(e => e.isSelect === true)
-            // let resultid= result.map(e => e.id)
-            // console.log(resultid)
-            // console.log(...resultid)
+            let result = this.state.category.filter(e => e.isSelect === true)
+            let resultid= result.map(e => e.id)
+            console.log(resultid)
+            console.log(...resultid)
             const userid = this.props.navigation.getParam('userid', '');
             const body = {
                 userid: "" + userid,
@@ -105,7 +105,8 @@ class Category extends React.Component {
                 year: "" + year,
                 age: age,
                 active: active,
-                categoryid: resultid
+                categoryid: resultid,
+                userpic: null
 
             };
 
