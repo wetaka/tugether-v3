@@ -1,7 +1,7 @@
 package com.tugether;
 
 import android.app.Application;
-
+import com.evollu.react.fcm.FIRMessagingPackage;
 import com.facebook.react.ReactApplication;
 import com.psykar.cookiemanager.CookieManagerPackage;
 import com.reactlibrary.RNAppAuthPackage;
@@ -33,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new RNFetchBlobPackage(),
             new ImagePickerPackage(),
-            new CustomTabsPackage()
+            new CustomTabsPackage(),
+            new FIRMessagingPackage(),
             
       );
     }
