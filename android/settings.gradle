@@ -1,4 +1,4 @@
-rootProject.name = 'hh'
+rootProject.name = 'tugether'
 include ':react-native-cookies'
 project(':react-native-cookies').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-cookies/android')
 include ':react-native-app-auth'
