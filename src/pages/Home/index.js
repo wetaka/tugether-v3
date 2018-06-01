@@ -13,7 +13,7 @@ import FindIcon from '../../Images/findicon.png';
 // import { Actions } from "react-native-router-flux";
 import Footer from "../../components/Footer";
 import SearchHeader from "../../components/SearchHeader";
-import SearchBox from "../../components/SearchBox";
+import SearchBox from "../../components/SearchBoxNew";
 import { API_URL } from "../../config/api";
 import ListCategory from '../../components/ListCategory';
 import { Transition } from 'react-navigation-fluid-transitions';
@@ -93,9 +93,43 @@ class Home extends React.Component {
     //alert(id)
     this.setState(
       { isSelectCategory: id },
-      () => { this.searchEvent() }
+      () => { this.searchEvent(this.state.searchword) }
     )
   }
+
+  getAutoComplete = text => new Promise((resolve, reject) => {
+    console.log('eiei nna', text, typeof text)
+    this.setState({
+      searchword: text,
+    });
+    if (text === null || text === undefined || text === '') {
+      console.log('auto complete not pass', text)
+      this.setState({
+        words: [],
+      },() => {
+        resolve();
+      });
+    } else {
+      console.log('auto complete pass!!!', text)
+      fetch(API_URL + 'get-autowords/' + text + '/' + (this.props.isSelectCategory ? this.props.isSelectCategory : 0))
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Search get data autocomplete', data, data.data)
+        this.setState({
+          words: (data && data.data) ? data.data : [],
+        }, () => {
+          console.log("test state", this.state);
+          resolve();
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Fail");
+        reject();
+      });
+    }
+    
+  })
 
   setEventAll(data) {
     return data.map((d) => {
@@ -149,7 +183,8 @@ class Home extends React.Component {
         })
         .then(() => {
           console.log("fixbug getUserByID then 2")
-          this.getAllEventActive();
+          this.searchEvent(this.state.searchword);
+          // this.getAllEventActive();
 
           resolve();
         })
@@ -185,7 +220,8 @@ class Home extends React.Component {
         if (value) {
           // We have data!!
           console.log(value);
-          this.getAllEventActive();
+          // this.getAllEventActive();
+          this.searchEvent(this.state.searchword)
           ////////////////////WIP////////////////
 
         }
@@ -214,7 +250,7 @@ class Home extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // this.getUser();
-    // console.log("fixbug componentWillReceiveProps Home", )
+    console.log("============ componentWillReceiveProps =============", )
     if (
       nextProps.navigation.getParam('userid', '')
       && !this.props.navigation.getParam('userid', '')
@@ -239,39 +275,88 @@ class Home extends React.Component {
     }
   }
 
-
-  searchEvent() {
-    let { searchword } = this.state
-    return new Promise((resolve, reject) => {
-      let text = ""
-      if (searchword != null) {
-        text = "?searchword=" + searchword
+  searchEvent = searchword => new Promise((resolve, reject) => {
+    let text = ""
+    if (
+      searchword !== null &&
+      searchword !== undefined &&
+      (typeof searchword === "string" && searchword.trim() !== '')
+    ) {
+      text = "?searchword=" + searchword
+    }
+    else {
+      text = ""
+      if (this.state.isSelectCategory === 0) {
+        this.getAllEventActive();
+        resolve();
+        return;
       }
-      else {
-        text = ""
-      }
-      return fetch(API_URL + 'search-event/' + this.state.isSelectCategory + "" + text)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("fixbug Search then 1")
-          console.log(data)
 
+    }
+    fetch(API_URL + 'search-event/' + this.state.isSelectCategory + "" + text)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("searchEvent Home", this.state.isSelectCategory, text, data)
+        // console.log(data)
+        if (data && data.data) {
           this.setState({
-            event: this.setEventAll(data.data),
-            maxSize: data.max_size,
+            event: [],
+            maxSize: 0,
+            searchword: searchword,
           }, () => {
-            console.log("test search", this.state)
-            resolve()
+            resolve();
           });
+          return;
+        }
 
-        })
-        .catch((error) => {
-          console.log("fixbug Search catch", error)
-          reject()
+        this.setState({
+          event: this.setEventAll(data.data),
+          maxSize: data.max_size,
+          searchword: searchword,
+        }, () => {
+          console.log("test search", this.state)
+          resolve()
         });
-    })
 
-  }
+      })
+      .catch((error) => {
+        console.log("fixbug Search catch", error)
+        reject()
+      });
+  })
+
+  // searchEvent() {
+  //   let { searchword } = this.state
+  //   return new Promise((resolve, reject) => {
+  //     let text = ""
+  //     if (searchword != null) {
+  //       text = "?searchword=" + searchword
+  //     }
+  //     else {
+  //       text = ""
+  //     }
+  //     return fetch(API_URL + 'search-event/' + this.state.isSelectCategory + "" + text)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         console.log("fixbug Search then 1")
+  //         console.log(data)
+
+  //         this.setState({
+  //           event: this.setEventAll(data.data),
+  //           maxSize: data.max_size,
+  //         }, () => {
+  //           console.log("test search", this.state)
+  //           resolve()
+  //         });
+
+  //       })
+  //       .catch((error) => {
+  //         console.log("fixbug Search catch", error)
+  //         reject()
+  //       });
+  //   })
+
+  // }
 
   //****************************************************************************** */
 
@@ -440,14 +525,10 @@ class Home extends React.Component {
 
         <SearchBox
           ref='search_box'
-          onSearch={() => this.searchEvent()}
-          autoCompleteWords={this.state.words}
+          onSearch={this.searchEvent}
+          autoCompleteTexts={this.state.words}
           isSelectCategory={this.state.isSelectCategory}
-          onChangeText={text => {
-            this.setState(
-              { searchword: text }
-            )
-          }}
+          onChangeText={this.getAutoComplete}
           onCancel={() => this.setState({ searchword: '' })}
           onDelete={() => this.setState({ searchword: '' })}
         />

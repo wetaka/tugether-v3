@@ -186,7 +186,7 @@ class Login extends React.Component {
             />
           </View>
 
-          <View style={{ paddingVertical: 10, paddingHorizontal : 10 }}>
+          {/* <View style={{ paddingVertical: 6, paddingHorizontal : 10 }}>
             <CustomInput
               placeholder="Password"
               keyboardType="numeric"
@@ -197,7 +197,7 @@ class Login extends React.Component {
               }}
               value={this.state.password}
             />
-          </View>
+          </View> */}
           <View style={{ paddingVertical: 50 , paddingHorizontal : 50 }}>
             <TouchableOpacity
               style={styles.btnLogin}
@@ -234,13 +234,14 @@ class Login extends React.Component {
             /> */}
 
 {/* ========================================================== */}
-            {/* <TouchableOpacity onPress={this.handleClick}>
-
-              <View style={styles.button}>
-                <Text style={styles.text}>Open Authentication</Text>
-              </View>
-
-            </TouchableOpacity> */}
+            <TouchableOpacity
+              onPress={this.handleClick}
+              style={styles.btnLogin}
+            >
+                <Text style={styles.loginText}>
+                   TU Auth [WIP]
+                </Text>
+            </TouchableOpacity>
 
             {/* <TouchableOpacity onPress={this.handleGetCookies}>
 
@@ -260,7 +261,7 @@ const styles = StyleSheet.create({
 
   bgStyle: { flexDirection: "column", position: "absolute", width: "100%", height: "100%", resizeMode: "stretch" },
   tulogo: { maxWidth: width - 100, alignSelf: "center" },
-  btnLogin: { backgroundColor: "#ae5945", padding: 15, borderRadius: 15, alignItems: "center" },
+  btnLogin: { backgroundColor: "#ae5945", padding: 15, borderRadius: 15, alignItems: "center", marginVertical: 5 },
   loginText: { color: "white", fontSize: 20 },
   viewStyle: { flexDirection: "column", backgroundColor: "white", flex: 1 }
   // scrollStyle: {flexDirection: 'column', backgroundColor: "white", flex: 1},
