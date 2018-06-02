@@ -118,7 +118,8 @@ class Login extends React.Component {
     if(nextAppState === 'active') {
       // CookieManager
       //   .get('http://192.168.1.10:8000')
-      //   .then((res) => console.log(res))
+      // //   .then((res) => console.log(res))
+      // 68.1.20
       fetch('http://172.25.79.42:8000/api/user/', {
         withCredentials: true,
         credentials: 'same-origin'

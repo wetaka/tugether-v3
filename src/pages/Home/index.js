@@ -276,6 +276,7 @@ class Home extends React.Component {
   }
 
   searchEvent = searchword => new Promise((resolve, reject) => {
+    console.log('searchword =====>', searchword);
     let text = ""
     if (
       searchword !== null &&
@@ -298,7 +299,7 @@ class Home extends React.Component {
       .then((data) => {
         console.log("searchEvent Home", this.state.isSelectCategory, text, data)
         // console.log(data)
-        if (data && data.data) {
+        if (!data || !data.data) {
           this.setState({
             event: [],
             maxSize: 0,
