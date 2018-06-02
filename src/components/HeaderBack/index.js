@@ -15,7 +15,7 @@ import { Icon } from 'react-native-elements';
 
 export default class HeaderBack extends Component {
     render() {
-        console.log("Prop jaaaa ",this.props)
+        console.log("Reload Header Back",this.props)
 
         return (
 
@@ -23,6 +23,10 @@ export default class HeaderBack extends Component {
                 <TouchableOpacity
 
                     onPress={() => {
+                        
+                        if (this.props.optionalFn) {
+                            this.props.optionalFn()
+                        }
                         this.props.navigator.goBack()
                     }}>
                     <View style={{ justifyContent: 'center' }}>

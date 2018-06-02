@@ -7,6 +7,8 @@ import { Icon } from 'react-native-elements';
 
 export default class HeaderMain extends Component {
     render() {
+        console.log('Reload in Header', this.props);
+        // this.props.mainReload()
         return (
 
             <View style={{ height: 55, width: '100%', backgroundColor: 'rgb(225,101,74)' }}>
@@ -59,7 +61,8 @@ export default class HeaderMain extends Component {
                                 // this.props.navigate('UserSetting')
 
                                 this.props.navigator('UserSetting',{
-                                    userid: this.props.pm
+                                    userid: this.props.pm,
+                                    mainReload: this.props.mainReload
                                     // navigator: this.props.navigation.navigate 
                                     
                                   })

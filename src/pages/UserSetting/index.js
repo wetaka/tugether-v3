@@ -362,6 +362,8 @@ class UserSetting extends React.Component {
     render() {
         console.log('render state UserSetting user ', this.state)
         console.log(' render get props => ', this.props)
+        const mainReload = this.props.navigation.getParam('mainReload', () => {});
+        console.log('Reload in UserSetting', this.props, mainReload)
 
         if (this.state.user.userid) {
             return (
@@ -375,6 +377,7 @@ class UserSetting extends React.Component {
                                     <HeaderBack
                                         header={"Setting"}
                                         navigator={this.props.navigation}
+                                        optionalFn={mainReload}
                                     />
                                     <BallIndicator color='grey' size={40} count={8} />
                                 </View>
@@ -385,6 +388,7 @@ class UserSetting extends React.Component {
                                     <HeaderBack
                                         header={"Setting"}
                                         navigator={this.props.navigation}
+                                        optionalFn={mainReload}
                                     />
 
                                     <View style={{ width: '100%', height: '30%', flexDirection: 'column' }}>

@@ -130,6 +130,10 @@ class Main extends React.Component {
   //   )
   // }
 
+  reload = () => {
+    this.getCurrentUser();
+  }
+
   setEventAll(data) {
     return data.map((d) => {
       return {
@@ -332,6 +336,7 @@ class Main extends React.Component {
 
         <HeaderMain
           navigator={this.props.navigation.navigate}
+          mainReload={this.reload}
         />
         {/* <View style={styles.searchView}>
           <SearchHeader
