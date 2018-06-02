@@ -451,6 +451,7 @@ class Description extends React.Component {
 
     render() {
         const eventid = this.props.navigation.getParam('eventid', '');
+        const image = this.props.navigation.getParam('image', null);
         const { event } = this.state
         console.log("this event : ", event)
         return (
@@ -467,12 +468,23 @@ class Description extends React.Component {
                     <View style={{ flex: 1  }}>
                         <View>
                             <View style={{ flex: 1 }}>
-                                <Transition shared={eventid}>
-                                    <Image
-                                        source={event.posterpic}
-                                        style={styles.posterStyle}
-                                    />
-                                </Transition>
+                                {
+                                    (image)
+                                    ? (
+                                        <Transition shared={eventid}>
+                                            <Image
+                                                source={event.posterpic}
+                                                style={styles.posterStyle}
+                                            />
+                                        </Transition>
+                                    )
+                                    : (
+                                        <Image
+                                                source={event.posterpic}
+                                                style={styles.posterStyle}
+                                        />
+                                    )
+                                }
                             </View>
 
                             {

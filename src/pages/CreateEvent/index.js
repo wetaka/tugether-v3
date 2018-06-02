@@ -286,24 +286,15 @@ class CreateEvent extends React.Component {
                 await this.saveEvent(imageRes.imageUrl)
                 await this.setState({
                     loader: false
-                }, () => {
-                    alert("Successful")
-                    console.log("Event id before change page:", this.state.id)
-
-                    // this.props.navigation.navigate('Description', {
-                    //     eventid: this.state.id,
-                    // });
-                }
-                )
-                // console.log("Event id before change page but after saveEvent:", this.state.id)
-
-
-            })
-            .then(() => {
+                });
+                alert("Successful")
                 console.log("Event id before change page:", this.state.id)
                 this.props.navigation.navigate('Description', {
                     eventid: this.state.id,
                 });
+                // console.log("Event id before change page but after saveEvent:", this.state.id)
+
+
             })
             .catch((error) => {
                 console.error(error);
