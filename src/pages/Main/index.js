@@ -155,7 +155,10 @@ class Main extends React.Component {
         console.log('value   ', value);
         if (value) {
           // We have data!!
-          if (value.userpic !== null) {
+          // TODO hotfix
+          if (!!value.userpic) {
+            console.log('====== value.userpic have value ======', value.userpic);
+
             this.setState({
               user: {
                 userid: value.userid,

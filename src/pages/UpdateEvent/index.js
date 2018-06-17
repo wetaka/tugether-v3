@@ -401,7 +401,7 @@ class UpdateEvent extends React.Component {
 
     setStartDate = async () => {
         try {
-            alert("Start Date")
+            // alert("Start Date")
             const { action, year, month, day } = await DatePickerAndroid.open({
                 // Use `new Date()` for current date.
                 // May 25 2020. Month 0 is January.
@@ -441,7 +441,7 @@ class UpdateEvent extends React.Component {
 
     setEndDate = async () => {
         try {
-            alert("End Date")
+            // alert("End Date")
             const { action, year, month, day } = await DatePickerAndroid.open({
                 // Use `new Date()` for current date.
                 // May 25 2020. Month 0 is January.

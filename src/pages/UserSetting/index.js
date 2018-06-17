@@ -460,7 +460,7 @@ class UserSetting extends React.Component {
                                                 onPress={async () => {
                                                     this.updateUser()
                                                     // const url = await this.uploadImage(this.state.user.userpic)
-                                                    alert(url);
+                                                    // alert(url);
                                                 }}
 
                                             />

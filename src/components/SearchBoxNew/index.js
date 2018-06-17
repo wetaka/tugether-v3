@@ -98,7 +98,7 @@ class Search extends PureComponent {
    */
   onSearch = async () => {
     // test
-    alert('search');
+    // alert('search');
     this.props.beforeSearch &&
       (await this.props.beforeSearch(this.state.keyword));
     if (this.props.keyboardShouldPersist === false) {

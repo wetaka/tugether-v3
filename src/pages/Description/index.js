@@ -157,7 +157,8 @@ class Description extends React.Component {
             },
             body: JSON.stringify({
                 ...this.state.event,
-                join: [...this.state.event.join, this.state.user.userid]
+                join: [...this.state.event.join, this.state.user.userid],
+                posterpic:this.state.event.posterpic.uri
             }
                 // , () => {
 
@@ -204,7 +205,8 @@ class Description extends React.Component {
                         },
                         body: JSON.stringify({
                             ...this.state.event,
-                            join: newjoin
+                            join: newjoin,
+                            posterpic : this.state.event.posterpic.uri
                         }
                             // , () => {
                             //     this.checkjoin()

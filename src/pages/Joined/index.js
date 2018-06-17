@@ -68,7 +68,7 @@ class Joined extends React.Component {
     render() {
         const userid = this.props.navigation.getParam('userid', '');
 
-        alert(this.state.users.length)
+        // alert(this.state.users.length)
 
         return (
             <View style={{ flex: 1 }}>
